@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b2c78ab0-b668-4573-8f1d-61c4bda42527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Service">
+      <UniqueIdentifier>{73331043-2950-4484-bdfd-802f22b39014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controllers">
+      <UniqueIdentifier>{5739f6fd-2a64-4313-a7f0-c8b6b4c93d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files">
+      <UniqueIdentifier>{a3916c1c-cabb-4db4-8ccb-47779ef0eec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{5f8f001e-ec25-4863-9cba-275e093f3ac1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Interface.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Album.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Artist.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublyLinkedList.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Playlist.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Song.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="background.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="RGB.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicLibrary.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="GestorAudio.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="SortEngine.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="covers.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="AppController.h">
+      <Filter>Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchSong.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularDoublyLinkedList.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RGB.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="AppController.cpp">
+      <Filter>Controllers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
