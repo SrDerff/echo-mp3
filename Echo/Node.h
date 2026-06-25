@@ -12,7 +12,8 @@ public:
     Node() : value(T()), next(nullptr), prev(nullptr) {}
     Node(T value) : value(value), next(nullptr), prev(nullptr) {}
 
-    T getValue() const { return value; }
+    T& getValue() { return value; }
+    const T& getValue() const { return value; }
 
     void setValue(T value) { this->value = value; }
 };

@@ -28,10 +28,13 @@
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GestorAudio.h" />
+    <ClInclude Include="HeapSort.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="MergeSort.h" />
     <ClInclude Include="MusicLibrary.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Playlist.h" />
+    <ClInclude Include="QuickSort.h" />
     <ClInclude Include="RGB.h" />
     <ClInclude Include="SearchSong.h" />
     <ClInclude Include="Song.h" />

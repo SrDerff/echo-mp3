@@ -1,4 +1,4 @@
-#include "Interface.h"
+ï»¿#include "Interface.h"
 #include "RGB.h"
 #include "Background.h"
 #include <windows.h>
@@ -131,52 +131,38 @@ void Interface::drawTabs(int x, int y, int selectedX) {
     drawBox(x, y, 196, 3, PANEL_R, PANEL_G, PANEL_B);
     fillRect(x + 1, y + 1, 194, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
 
-    if (selectedX == 1) {
-        fillRect(x + 63, y + 1, 12, 1, ' ', 255, 255, 255, 40, 58, 78);
-        drawBox(x + 62, y, 14, 3, PANEL_R, PANEL_G, PANEL_B);
+    struct TabInfo {
+        string label;
+        int offset;
+    };
 
-        writeAt(x + 66, y + 1, "Library", TITLE_R, TITLE_G, TITLE_B);
-        writeAt(x + 79, y + 1, "Playlists", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 95, y + 1, "Historial", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 110, y + 1, "Search", TEXT_R, TEXT_G, TEXT_B);
-    }
+    const TabInfo tabs[] = {
+        {"Library", 64},
+        {"Playlists", 80},
+        {"Liked", 100},
+        {"Recom.", 111},
+        {"Historial", 124},
+        {"Search", 143}
+    };
 
-    if (selectedX == 2) {
-        writeAt(x + 66, y + 1, "Library", TEXT_R, TEXT_G, TEXT_B);
+    for (int i = 0; i < 6; ++i) {
+        int tabIndex = i + 1;
+        int tabX = x + tabs[i].offset;
+        int tabWidth = static_cast<int>(tabs[i].label.size()) + 4;
 
-        fillRect(x + 77, y + 1, 13, 1, ' ', 255, 255, 255, 40, 58, 78);
-        drawBox(x + 76, y, 15, 3, PANEL_R, PANEL_G, PANEL_B);
-
-        writeAt(x + 79, y + 1, "Playlists", TITLE_R, TITLE_G, TITLE_B);
-        writeAt(x + 95, y + 1, "Historial", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 110, y + 1, "Search", TEXT_R, TEXT_G, TEXT_B);
-    }
-
-    if (selectedX == 3) {
-        writeAt(x + 66, y + 1, "Library", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 79, y + 1, "Playlists", TEXT_R, TEXT_G, TEXT_B);
-
-        fillRect(x + 93, y + 1, 13, 1, ' ', 255, 255, 255, 40, 58, 78);
-        drawBox(x + 92, y, 14, 3, PANEL_R, PANEL_G, PANEL_B);
-
-        writeAt(x + 95, y + 1, "Historial", TITLE_R, TITLE_G, TITLE_B);
-        writeAt(x + 110, y + 1, "Search", TEXT_R, TEXT_G, TEXT_B);
-    }
-
-    if (selectedX == 4) {
-        writeAt(x + 66, y + 1, "Library", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 79, y + 1, "Playlists", TEXT_R, TEXT_G, TEXT_B);
-        writeAt(x + 95, y + 1, "Historial", TEXT_R, TEXT_G, TEXT_B);
-
-        fillRect(x + 108, y + 1, 10, 1, ' ', 255, 255, 255, 40, 58, 78);
-        drawBox(x + 107, y, 12, 3, PANEL_R, PANEL_G, PANEL_B);
-
-        writeAt(x + 110, y + 1, "Search", TITLE_R, TITLE_G, TITLE_B);
+        if (selectedX == tabIndex) {
+            fillRect(tabX, y + 1, tabWidth - 2, 1, ' ', 255, 255, 255, 40, 58, 78);
+            drawBox(tabX - 1, y, tabWidth, 3, PANEL_R, PANEL_G, PANEL_B);
+            writeAt(tabX + 1, y + 1, tabs[i].label, TITLE_R, TITLE_G, TITLE_B);
+        }
+        else {
+            writeAt(tabX + 1, y + 1, tabs[i].label, TEXT_R, TEXT_G, TEXT_B);
+        }
     }
 }
 
 void Interface::drawTableHeader(int x, int y, int selectedTab) {
-    if (selectedTab == 1) {
+    if (selectedTab == 1 || selectedTab == 3 || selectedTab == 5 || selectedTab == 6) {
         writeAt(x, y, "Artist", 71, 136, 182);
         writeAt(x + 52, y, "Title", 71, 136, 182);
         writeAt(x + 103, y, "Duration", 71, 136, 182);
@@ -186,6 +172,12 @@ void Interface::drawTableHeader(int x, int y, int selectedTab) {
         writeAt(x, y, "User  ", 71, 136, 182);
         writeAt(x + 52, y, "Title", 71, 136, 182);
         writeAt(x + 103, y, "Count", 71, 136, 182);
+        hLine(x, y + 1, 116, '-', PANEL_R, PANEL_G, PANEL_B);
+    }
+    else if (selectedTab == 4) {
+        writeAt(x, y, "Artist", 71, 136, 182);
+        writeAt(x + 52, y, "Title", 71, 136, 182);
+        writeAt(x + 103, y, "Score", 71, 136, 182);
         hLine(x, y + 1, 116, '-', PANEL_R, PANEL_G, PANEL_B);
     }
 }
@@ -259,18 +251,27 @@ static string fitText(const string& text, size_t maxLen) {
     return text.substr(0, maxLen - 3) + "...";
 }
 
-void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
-    Node<Song>* curr = library.getAllSongs()->getHead();
+void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending) {
+    vector<Song> songs = library.getAllSongsVector();
+
+    if (durationSortActive) {
+        if (durationSortAscending) {
+            MergeSort::sortByDurationAscending(songs);
+        }
+        else {
+            MergeSort::sortByDurationDescending(songs);
+        }
+    }
+
     int currentIndex = 0;
     int drawnRows = 0;
 
-    while (curr != nullptr && currentIndex < topIndex) {
-        curr = curr->next;
+    while (currentIndex < topIndex && currentIndex < (int)songs.size()) {
         currentIndex++;
     }
 
-    while (curr != nullptr && drawnRows < kLibraryVisibleRows) {
-        Song song = curr->getValue();
+    while (currentIndex < (int)songs.size() && drawnRows < kLibraryVisibleRows) {
+        Song& song = songs[currentIndex];
         int yy = y + drawnRows * 2;
         bool selected = (currentIndex == selectedIndex);
 
@@ -278,7 +279,10 @@ void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selecte
         string title = fitText(song.getName(), 45);
         string duration = formatDuration(song.getDuration());
 
-        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255, selected ? SELECT_BG_R : BG_R, selected ? SELECT_BG_G : BG_G, selected ? SELECT_BG_B : BG_B);
+        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255,
+            selected ? SELECT_BG_R : BG_R,
+            selected ? SELECT_BG_G : BG_G,
+            selected ? SELECT_BG_B : BG_B);
 
         if (selected) {
             writeAt(x, yy, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
@@ -291,13 +295,118 @@ void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selecte
             writeAt(x + 108, yy, duration, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
         }
 
-        curr = curr->next;
         currentIndex++;
         drawnRows++;
     }
 
     if (drawnRows == 0) {
         writeAt(x, y, "No hay canciones cargadas en la biblioteca.", DIM_R, DIM_G, DIM_B);
+        return;
+    }
+
+    while (drawnRows < kLibraryVisibleRows) {
+        int yy = y + drawnRows * 2;
+        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255, BG_R, BG_G, BG_B);
+        drawnRows++;
+    }
+}
+
+void Interface::drawLikedRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
+    vector<Song> songs = library.getLikedSongsVector();
+
+    int currentIndex = 0;
+    int drawnRows = 0;
+
+    while (currentIndex < topIndex && currentIndex < (int)songs.size()) {
+        currentIndex++;
+    }
+
+    while (currentIndex < (int)songs.size() && drawnRows < kLibraryVisibleRows) {
+        Song& song = songs[currentIndex];
+        int yy = y + drawnRows * 2;
+        bool selected = (currentIndex == selectedIndex);
+
+        string artist = fitText(song.getAuthor(), 30);
+        string title = fitText(song.getName(), 45);
+        string duration = formatDuration(song.getDuration());
+
+        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255,
+            selected ? SELECT_BG_R : BG_R,
+            selected ? SELECT_BG_G : BG_G,
+            selected ? SELECT_BG_B : BG_B);
+
+        if (selected) {
+            writeAt(x, yy, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+            writeAt(x + 37, yy, title, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+            writeAt(x + 108, yy, duration, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        }
+        else {
+            writeAt(x, yy, artist, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+            writeAt(x + 37, yy, title, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+            writeAt(x + 108, yy, duration, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        }
+
+        currentIndex++;
+        drawnRows++;
+    }
+
+    if (drawnRows == 0) {
+        writeAt(x, y, "Marca canciones con L para verlas aqui.", DIM_R, DIM_G, DIM_B);
+        return;
+    }
+
+    while (drawnRows < kLibraryVisibleRows) {
+        int yy = y + drawnRows * 2;
+        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255, BG_R, BG_G, BG_B);
+        drawnRows++;
+    }
+}
+
+void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    vector<RecommendationItem> recommendations = library.getRecommendedSongs();
+
+    if (recommendationsSortActive && !recommendations.empty()) {
+        QuickSort::quickSort(recommendations, 0, (int)recommendations.size() - 1, recommendationsSortAscending);
+    }
+
+    int currentIndex = 0;
+    int drawnRows = 0;
+
+    while (currentIndex < topIndex && currentIndex < (int)recommendations.size()) {
+        currentIndex++;
+    }
+
+    while (currentIndex < (int)recommendations.size() && drawnRows < kLibraryVisibleRows) {
+        RecommendationItem& item = recommendations[currentIndex];
+        int yy = y + drawnRows * 2;
+        bool selected = (currentIndex == selectedIndex);
+
+        string artist = fitText(item.song.getAuthor(), 30);
+        string title = fitText(item.song.getName(), 45);
+        string score = to_string(item.score);
+
+        fillRect(x - 1, yy, 117, 1, ' ', 255, 255, 255,
+            selected ? SELECT_BG_R : BG_R,
+            selected ? SELECT_BG_G : BG_G,
+            selected ? SELECT_BG_B : BG_B);
+
+        if (selected) {
+            writeAt(x, yy, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+            writeAt(x + 37, yy, title, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+            writeAt(x + 108, yy, score, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        }
+        else {
+            writeAt(x, yy, artist, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+            writeAt(x + 37, yy, title, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+            writeAt(x + 108, yy, score, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        }
+
+        currentIndex++;
+        drawnRows++;
+    }
+
+    if (drawnRows == 0) {
+        writeAt(x, y, "Marca canciones con L para generar recomendaciones.", DIM_R, DIM_G, DIM_B);
         return;
     }
 
@@ -442,8 +551,18 @@ void Interface::displayBackground() {
 
 void Interface::displayHud(MusicLibrary& library, int selectedIndex, int topIndex) {
     drawBox(2, 1, 196, 6, 170, 176, 204);
-    string name = library.getAllSongs()->getAt(topIndex + selectedIndex).getName();
-    string artist = library.getAllSongs()->getAt(topIndex + selectedIndex).getAuthor();
+    int index = selectedIndex;
+    int totalSongs = static_cast<int>(library.getAllSongs()->getSize());
+
+    if (index < 0 || index >= totalSongs) {
+        writeAt(87, 3, "Sin cancion seleccionada", TITLE_R, TITLE_G, TITLE_B);
+        writeAt(83, 4, "", SOFT_R, SOFT_G, SOFT_B);
+        return;
+    }
+
+    Song currentSong = library.getAllSongs()->getAt(index);
+    string name = currentSong.getName();
+    string artist = currentSong.getAuthor();
 
     writeAt(4, 3, "|Playing|", 169, 177, 204);
     //writeAt(4, 4, "2:46 / 5:21", SOFT_R, SOFT_G, SOFT_B);
@@ -467,8 +586,12 @@ void Interface::displayHud(MusicLibrary& library, int selectedIndex, int topInde
 void Interface::refreshHud(MusicLibrary& library, int selectedIndex, int topIndex)
 {
     this->fillRect(80, 3, 40, 2, ' ', 22, 24, 37, 22, 24, 37);
-    string name = library.getAllSongs()->getAt(selectedIndex).getName();
-    string artist = library.getAllSongs()->getAt(selectedIndex).getAuthor();
+    int totalSongs = static_cast<int>(library.getAllSongs()->getSize());
+    if (selectedIndex < 0 || selectedIndex >= totalSongs) return;
+
+    Song currentSong = library.getAllSongs()->getAt(selectedIndex);
+    string name = currentSong.getName();
+    string artist = currentSong.getAuthor();
     int center = 196 / 2;
     int nameX = center - name.size() / 2;
     int artistX = center - artist.size() / 2;
@@ -480,13 +603,35 @@ void Interface::displayTab() {
     drawTabs(2, 8, 1);
 }
 
-void Interface::displayLibrary(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayLibrary(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 1);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 1);
-    drawLibraryRows(4, 17, library, selectedIndex, topIndex);
+    drawLibraryRows(4, 17, library, selectedIndex, topIndex, durationSortActive, durationSortAscending);
+    vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
+    drawRightPanelPlaceholder(131, 13, 58, 31);
+}
+
+void Interface::displayLiked(MusicLibrary& library, int selectedIndex, int topIndex) {
+    fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
+    fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
+    drawTabs(2, 8, 3);
+    drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
+    drawTableHeader(4, 14, 3);
+    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+    vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
+    drawRightPanelPlaceholder(131, 13, 58, 31);
+}
+
+void Interface::displayRecommendations(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
+    fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
+    drawTabs(2, 8, 4);
+    drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
+    drawTableHeader(4, 14, 4);
+    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
@@ -644,7 +789,7 @@ void Interface::drawPlaylistSongsRows(
 void Interface::displayQueue(MusicLibrary& library, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
-    drawTabs(2, 8, 3);
+    drawTabs(2, 8, 5);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 5);
     displayQueueSongs(*library.getSessionHistory(), selectedIndex, topIndex);
@@ -653,12 +798,11 @@ void Interface::displayQueue(MusicLibrary& library, int selectedIndex, int topIn
 }
 void Interface::displaySearch(MusicLibrary& library, int selectedIndex, int topIndex) {
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
-    drawTabs(2, 8, 4);
+    drawTabs(2, 8, 6);
 }
 void Interface::displayConsole() {
     fillRect(3, 53, 50, 3, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawBox(2, 52, 196, 5, PANEL_R, PANEL_G, PANEL_B);
-    writeAt(4, 53, "Waiting for input..", DIM_R, DIM_G, DIM_B);
 }
 void Interface::displayHelp() {
     // [Enter]
@@ -673,21 +817,37 @@ void Interface::displayHelp() {
     writeAt(172, 53, "[+]", ACCENT_R, 148, 255);
     writeAt(175, 53, ": Agregar a playlist", 220, 220, 220);
 
-    // [-]
-    writeAt(110, 55, "[-]", ACCENT_R, 148, 255);
-    writeAt(113, 55, ": Eliminar de playlist", 220, 220, 220);
+    // [L]
+    writeAt(110, 55, "[L]", ACCENT_R, 148, 255);
+    writeAt(113, 55, ": Like", 220, 220, 220);
 
-    // [Flechas]
-    writeAt(142, 55, "[Flechas]", ACCENT_R, 148, 255);
-    writeAt(150, 55, ": Desplazarse", 220, 220, 220);
+    // [A / S / D]
+    writeAt(122, 55, "[A/S/D]", ACCENT_R, 148, 255);
+    writeAt(130, 55, ": Duracion", 220, 220, 220);
+
+    // [R / T]
+    writeAt(143, 55, "[R/T]", ACCENT_R, 148, 255);
+    writeAt(150, 55, ": Score", 220, 220, 220);
+
+    // [O / P]
+    writeAt(160, 55, "[O/P]", ACCENT_R, 148, 255);
+    writeAt(167, 55, ": Playlists", 220, 220, 220);
 
     // [Esc]
-    writeAt(172, 55, "[Esc]", ACCENT_R, 148, 255);
-    writeAt(175, 55, ": Retroceder / Salir", 220, 220, 220);
+    writeAt(181, 55, "[Esc]", ACCENT_R, 148, 255);
+    writeAt(187, 55, ": Salir", 220, 220, 220);
 }
 
-void Interface::refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex) {
-    drawLibraryRows(4, 17, library, selectedIndex, topIndex);
+void Interface::refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending) {
+    drawLibraryRows(4, 17, library, selectedIndex, topIndex, durationSortActive, durationSortAscending);
+}
+
+void Interface::refreshLikedRows(MusicLibrary& library, int selectedIndex, int topIndex) {
+    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+}
+
+void Interface::refreshRecommendationsRows(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
 }
 
 void Interface::refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex) {
@@ -801,7 +961,7 @@ void Interface::refreshPlaylistSongsSelection(
         );
     }
 
-    // dibujar nueva selección
+    // dibujar nueva seleccion
     if (
         newVisibleRow >= 0 &&
         newVisibleRow < kLibraryVisibleRows
@@ -935,7 +1095,7 @@ void Interface::refreshPlaylistsSelection(
         }
     }
 
-    // dibujar nueva selección
+    // dibujar nueva seleccion
     if (
         newVisibleRow >= 0 &&
         newVisibleRow < kLibraryVisibleRows
@@ -1008,9 +1168,9 @@ void Interface::refreshPlaylistSongsRows(Playlist* playlist, int selectedIndex, 
     drawPlaylistSongsRows(4, 19, playlist, selectedIndex, topIndex);
 }
 
-void Interface::displayMenu(MusicLibrary& library, int selectedIndex, int topIndex, bool playing) {
+void Interface::displayMenu(MusicLibrary& library, int selectedIndex, int topIndex, bool playing, bool durationSortActive, bool durationSortAscending) {
     displayHud(library, selectedIndex, topIndex);
-    displayLibrary(library, selectedIndex, topIndex);
+    displayLibrary(library, selectedIndex, topIndex, durationSortActive, durationSortAscending);
     displayConsole();
     displayHelp();
     drawBottomSeekbar(2, 57, 196);
@@ -1018,14 +1178,14 @@ void Interface::displayMenu(MusicLibrary& library, int selectedIndex, int topInd
 }
 
 void Interface::displaySearchWithResults(vector<Song>& results, int selectedIndex, int topIndex, const string& query) {
-    drawTabs(2, 8, 4);
+    drawTabs(2, 8, 6);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
 
     string queryLine = "Search: " + query + "_";
     writeAt(4, 11, queryLine, TEXT_R, TEXT_G, TEXT_B);
 
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
-    drawTableHeader(4, 14, 5);
+    drawTableHeader(4, 14, 6);
     drawResultRows(4, 17, results, selectedIndex, topIndex);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);

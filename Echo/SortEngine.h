@@ -15,10 +15,14 @@ private:
         for (int j = low; j < high; j++) {
             if (comp(arr[j], pivot)) {
                 i++;
-                swap(arr[i], arr[j]);  // Intercambio estandar de la STL.
+                T* temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
         }
-        swap(arr[i + 1], arr[high]);  // Colocamos el pivote en su posicion correcta.
+        T* temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;  // Colocamos el pivote en su posicion correcta.
         return i + 1;
     }
 

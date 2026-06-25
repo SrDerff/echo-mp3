@@ -25,7 +25,9 @@ private:
     void drawVolumeBar(int x, int y, int level);
     void drawTabs(int x, int y, int selectedX);
     void drawTableHeader(int x, int y, int selectedTab);
-    void drawLibraryRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex);
+    void drawLibraryRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending);
+    void drawLikedRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex);
+    void drawRecommendationRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending);
     void drawQueueRows(int x, int y);
     void drawPlaylistsRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex);
     void drawPlaylistSongsRows(int x, int y, Playlist* playlist, int selectedIndex, int topIndex);
@@ -47,16 +49,20 @@ public:
     void displayQueue(MusicLibrary& library, int selectedIndex, int topIndex);
     void displayPlaylists(MusicLibrary& library, int selectedIndex, int topIndex);
     void displayPlaylistSongs(Playlist* playlist, int selectedIndex, int topIndex);
-    void displayLibrary(MusicLibrary& library, int selectedIndex, int topIndex);
+    void displayLibrary(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending);
+    void displayLiked(MusicLibrary& library, int selectedIndex, int topIndex);
+    void displayRecommendations(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending);
     void displaySearch(MusicLibrary& library, int selectedIndex, int topIndex);
-    void displayMenu(MusicLibrary& library, int selectedIndex, int topIndex, bool playing);
+    void displayMenu(MusicLibrary& library, int selectedIndex, int topIndex, bool playing, bool durationSortActive = false, bool durationSortAscending = true);
     void displayBackground();
     void drawSpectrum(int x, int y, bool playing);
     void displayHelp();
 
     void refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex);
     void refreshHud(MusicLibrary& library, int selectedIndex, int topIndex);
-    void refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex);
+    void refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending);
+    void refreshLikedRows(MusicLibrary& library, int selectedIndex, int topIndex);
+    void refreshRecommendationsRows(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending);
 
     //Para lo de queue
     void displayQueueSongs(Stack<Song>& library, int selectedIndex, int topIndex);
