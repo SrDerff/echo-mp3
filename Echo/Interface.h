@@ -57,6 +57,8 @@ public:
     void displayBackground();
     void drawSpectrum(int x, int y, bool playing);
     void displayHelp();
+    void displayWelcomeScreen(int selectedIndex);
+    void refreshWelcomeSelection(int previousSelectedIndex, int selectedIndex);
 
     void refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex);
     void refreshHud(MusicLibrary& library, int selectedIndex, int topIndex);

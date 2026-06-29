@@ -54,6 +54,9 @@ private:
     bool recommendationsSortAscending;
     bool recommendationsSortActive;
 
+    bool showingWelcome;
+    int welcomeSelectedIndex;
+
     // Estado de busqueda (copias seguras, no punteros)
     vector<Song> searchResults;
     string searchQuery;
@@ -88,6 +91,9 @@ private:
     void moveDownQueue();
     void moveUpQueue();
     void playSelectedQueueSong();
+    void moveDownWelcome();
+    void moveUpWelcome();
+    void enterWelcomeOption();
 
 public:
     AppController();

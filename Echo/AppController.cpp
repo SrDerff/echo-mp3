@@ -72,18 +72,44 @@ AppController::AppController()
     durationSortActive(false),
     durationSortAscending(true),
     recommendationsSortActive(true),
-    recommendationsSortAscending(false)
+    recommendationsSortAscending(false),
+    showingWelcome(true),
+    welcomeSelectedIndex(0)
 {
     FileManager::generateDataset(5);
     FileManager::loadSongs(musicLib);
     FileManager::loadPlaylists(musicLib);
-    ui.displayMenu(musicLib, librarySelectedIndex, libraryTopIndex, false);
+    ui.displayWelcomeScreen(welcomeSelectedIndex);
     musicLib.createDailyPlaylist();
 }
 
 AppController::~AppController() {
     FileManager::saveSongs(musicLib);
     FileManager::savePlaylists(musicLib);
+}
+
+void AppController::moveDownWelcome() {
+    int previous = welcomeSelectedIndex;
+    welcomeSelectedIndex++;
+    if (welcomeSelectedIndex > 2) welcomeSelectedIndex = 0;
+    ui.refreshWelcomeSelection(previous, welcomeSelectedIndex);
+}
+
+void AppController::moveUpWelcome() {
+    int previous = welcomeSelectedIndex;
+    welcomeSelectedIndex--;
+    if (welcomeSelectedIndex < 0) welcomeSelectedIndex = 2;
+    ui.refreshWelcomeSelection(previous, welcomeSelectedIndex);
+}
+
+void AppController::enterWelcomeOption() {
+    if (welcomeSelectedIndex == 2) {
+        FileManager::savePlaylists(musicLib);
+        exit(0);
+    }
+
+    showingWelcome = false;
+    ui.displayMenu(musicLib, librarySelectedIndex, libraryTopIndex, false, durationSortActive, durationSortAscending);
 }
 
 void AppController::renderRefresh() {
@@ -469,6 +495,38 @@ void AppController::handleInput() {
     if (!_kbhit()) return;
 
     int key = _getch();
+
+    if (showingWelcome) {
+        if (key == 27) {
+            FileManager::savePlaylists(musicLib);
+            exit(0);
+        }
+
+        if (key >= '1' && key <= '3') {
+            int previous = welcomeSelectedIndex;
+            welcomeSelectedIndex = key - '1';
+            ui.refreshWelcomeSelection(previous, welcomeSelectedIndex);
+            return;
+        }
+
+        if (key == 13) {
+            enterWelcomeOption();
+            return;
+        }
+
+        if (key != 224) return;
+        key = _getch();
+
+        if (key == 72) {
+            moveUpWelcome();
+        }
+        else if (key == 80) {
+            moveDownWelcome();
+        }
+
+        return;
+    }
+
     if (key == '+') {
         addSelectedSongToPlaylist();
         return;
@@ -1236,7 +1294,9 @@ Explicacion detallada:
 void AppController::run() {
     while (true) {
         handleInput(); // Maneja la entrada del usuario en cada iteracion del loop principal.
-        ui.drawSpectrum(130, 50, !audio.estaPausado()); // Dibuja el espectro en la parte inferior de la pantalla.
+        if (!showingWelcome) {
+            ui.drawSpectrum(130, 50, !audio.estaPausado()); // Dibuja el espectro en la parte inferior de la pantalla.
+        }
     }
 }
 
