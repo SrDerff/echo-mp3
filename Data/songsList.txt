@@ -1,60 +1,300 @@
-Alright|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|Unknown|0|0
-AM|Nio Garcia|..\\Canciones\\AM.wav|182.36|Unknown|0|0
-Animals|Martin Garrix|..\\Canciones\\Animals.wav|187.13|Unknown|0|0
-Apocalypse|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|Unknown|0|0
-As It Was|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|Unknown|0|0
-Bad Guy|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|Unknown|0|0
-Best Friend|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|Unknown|0|0
-Blinding Lights|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Unknown|0|0
-Boulevard of Broken Dreams|Green Day|..\\Canciones\\Boulevard.wav|260.94|Unknown|0|0
-Californication|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|Unknown|0|0
-Callaita|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Unknown|0|0
-Can't Stop the Feeling!|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Unknown|0|0
-Chamber Of Reflection|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|Unknown|0|0
-Closer|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|Unknown|0|0
-Come As You Are|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Unknown|0|0
-Creep|Radiohead|..\\Canciones\\Creep.wav|236.53|Unknown|0|0
-Dakiti|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Unknown|0|0
-DNA.|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|Unknown|0|0
-Do I Wanna Know?|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|Unknown|0|0
-Don't You Worry Child|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|Unknown|0|0
-Ella Baila Sola|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|Unknown|0|0
-Feliz Cumple Ferxxo|Feid|..\\Canciones\\Ferxxo.wav|156.4|Unknown|0|0
-Firework|Katy Perry|..\\Canciones\\Firework.wav|233.25|Unknown|0|0
-Get Lucky|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|Unknown|0|0
-Glimpse Of Us|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|Unknown|0|0
-God's Plan|Drake|..\\Canciones\\GodsPlan.wav|198.97|Unknown|0|0
-Goosebumps|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|Unknown|0|0
-HUMBLE.|Kendrick Lamar|..\\Canciones\\Humble.wav|177|Unknown|0|0
-Karma Police|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|Unknown|0|0
-La Cancion|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|Unknown|0|0
-Last Nite|The Strokes|..\\Canciones\\LastNite.wav|201.45|Unknown|0|0
-Levels|Avicii|..\\Canciones\\Levels.wav|198.36|Unknown|0|0
-Levitating|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Unknown|0|0
-Lose Yourself|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Unknown|0|0
-Lucid Dreams|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|Unknown|0|0
-Mr. Brightside|The Killers|..\\Canciones\\MrBrightside.wav|227.48|Unknown|0|0
-Normal|Feid|..\\Canciones\\Normal.wav|170.18|Unknown|0|0
-No Role Modelz|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|Unknown|0|0
-Nothing's Gonna Hurt You Baby|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|Unknown|0|0
-One More Time|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Unknown|0|0
-Outside|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Unknown|0|0
-Pretty Girl|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|Unknown|0|0
-Provenza|Karol G|..\\Canciones\\Provenza.wav|206.19|Unknown|0|0
-Scared To Be Lonely|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|Unknown|0|0
-Seven Nation Army|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Unknown|0|0
-Shape of You|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Unknown|0|0
-Sicko Mode|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Unknown|0|0
-Slow Dancing In The Dark|Joji|..\\Canciones\\SlowDancing.wav|209.28|Unknown|0|0
-Sofia|Clairo|..\\Canciones\\Sofia.wav|188.43|Unknown|0|0
-Space Song|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Unknown|0|0
-Stronger|Kanye West|..\\Canciones\\Stronger.wav|312.03|Unknown|0|0
-Style|Taylor Swift|..\\Canciones\\Style.wav|242.99|Unknown|0|0
-Summer|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Unknown|0|0
-Sunflower|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Unknown|0|0
-Smells Like Teen Spirit|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Unknown|0|0
-thank u, next|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|Unknown|0|0
-Titi Me Pregunto|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Unknown|0|0
-Tusa|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|Unknown|0|0
-Uptown Funk|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|Unknown|0|0
-Wake Me Up|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|Unknown|0|0
+Alright - RnB Mix|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|Soul|72|1
+Alright - Jazz Version|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|Jazz|195|0
+Alright - Country Mix|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|Country|381|1
+Alright - RnB Mix|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|R&B|138|0
+Alright - Remix|Kendrick Lamar|..\\Canciones\\Alright.wav|194.49|Electronic|216|1
+AM - RnB Mix|Nio Garcia|..\\Canciones\\AM.wav|182.36|R&B|134|1
+AM - RnB Mix|Nio Garcia|..\\Canciones\\AM.wav|182.36|R&B|476|0
+AM - Jazz Version|Nio Garcia|..\\Canciones\\AM.wav|182.36|Jazz|249|1
+AM - Jazz Version|Nio Garcia|..\\Canciones\\AM.wav|182.36|Jazz|239|1
+AM - Latin Version|Nio Garcia|..\\Canciones\\AM.wav|182.36|Latin|235|0
+Animals - Pop Version|Martin Garrix|..\\Canciones\\Animals.wav|187.13|K-Pop|48|0
+Animals - Remix|Martin Garrix|..\\Canciones\\Animals.wav|187.13|Reggaeton|439|1
+Animals - Remix|Martin Garrix|..\\Canciones\\Animals.wav|187.13|Hip-Hop|148|0
+Animals - Latin Version|Martin Garrix|..\\Canciones\\Animals.wav|187.13|Latin|123|0
+Animals - Country Mix|Martin Garrix|..\\Canciones\\Animals.wav|187.13|Country|260|0
+Apocalypse - Pop Version|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|Pop|355|1
+Apocalypse - Pop Version|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|K-Pop|257|1
+Apocalypse - Jazz Version|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|Jazz|175|0
+Apocalypse - Rock Version|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|Rock|435|0
+Apocalypse - Alt Version|Cigarettes After Sex|..\\Canciones\\Apocalypse.wav|290.08|Indie|3|0
+As It Was - RnB Mix|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|R&B|169|0
+As It Was - Rock Version|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|Rock|494|1
+As It Was - Remix|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|Electronic|144|0
+As It Was - Jazz Version|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|Jazz|180|0
+As It Was - Pop Version|Harry Styles|..\\Canciones\\AsItWas.wav|165.61|Pop|487|0
+Bad Guy - RnB Mix|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|Soul|294|1
+Bad Guy - Alt Version|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|Indie|338|0
+Bad Guy - Pop Version|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|K-Pop|357|0
+Bad Guy - Country Mix|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|Country|86|1
+Bad Guy - Rock Version|Billie Eilish|..\\Canciones\\BadGuy.wav|205.93|Metal|471|1
+Best Friend - RnB Mix|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|R&B|282|0
+Best Friend - RnB Mix|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|Blues|492|1
+Best Friend - Country Mix|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|Country|226|0
+Best Friend - RnB Mix|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|Blues|421|0
+Best Friend - Latin Version|Rex Orange County|..\\Canciones\\BestFriend.wav|262.47|Latin|148|0
+Blinding Lights - Country Mix|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Country|408|1
+Blinding Lights - Rock Version|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Metal|493|1
+Blinding Lights - Remix|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Reggaeton|232|0
+Blinding Lights - Remix|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Electronic|377|1
+Blinding Lights - RnB Mix|The Weeknd|..\\Canciones\\BlindingLights.wav|203.21|Blues|394|0
+Boulevard of Broken Dreams - RnB Mix|Green Day|..\\Canciones\\Boulevard.wav|260.94|Soul|476|0
+Boulevard of Broken Dreams - Remix|Green Day|..\\Canciones\\Boulevard.wav|260.94|Electronic|450|0
+Boulevard of Broken Dreams - Pop Version|Green Day|..\\Canciones\\Boulevard.wav|260.94|Pop|161|0
+Boulevard of Broken Dreams - Rock Version|Green Day|..\\Canciones\\Boulevard.wav|260.94|Rock|284|1
+Boulevard of Broken Dreams - Pop Version|Green Day|..\\Canciones\\Boulevard.wav|260.94|K-Pop|319|0
+Californication - Rock Version|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|Rock|484|0
+Californication - Alt Version|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|Alternative|108|0
+Californication - RnB Mix|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|Funk|464|1
+Californication - Rock Version|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|Metal|152|1
+Californication - Pop Version|Red Hot Chili Peppers|..\\Canciones\\Californication.wav|321.06|K-Pop|453|0
+Callaita - RnB Mix|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Funk|198|0
+Callaita - Latin Version|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Latin|457|1
+Callaita - Remix|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Electronic|106|1
+Callaita - Remix|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Hip-Hop|213|1
+Callaita - Latin Version|Bad Bunny|..\\Canciones\\Callaita.wav|251.88|Latin|82|1
+Can't Stop the Feeling! - RnB Mix|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Blues|256|0
+Can't Stop the Feeling! - RnB Mix|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Funk|49|1
+Can't Stop the Feeling! - Remix|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Hip-Hop|184|1
+Can't Stop the Feeling! - Pop Version|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Pop|389|0
+Can't Stop the Feeling! - RnB Mix|Justin Timberlake|..\\Canciones\\CantStopFeeling.wav|285.84|Blues|137|0
+Chamber Of Reflection - Alt Version|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|Indie|234|0
+Chamber Of Reflection - Pop Version|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|K-Pop|123|1
+Chamber Of Reflection - Latin Version|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|Latin|224|0
+Chamber Of Reflection - Rock Version|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|Metal|208|1
+Chamber Of Reflection - Pop Version|Mac DeMarco|..\\Canciones\\ChamberReflection.wav|231.73|Pop|117|0
+Closer - Pop Version|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|K-Pop|452|1
+Closer - Jazz Version|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|Jazz|480|0
+Closer - Jazz Version|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|Jazz|178|1
+Closer - Remix|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|Hip-Hop|483|1
+Closer - Alt Version|The Chainsmokers ft. Halsey|..\\Canciones\\Closer.wav|261.81|Indie|470|0
+Come As You Are - Rock Version|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Rock|8|1
+Come As You Are - Remix|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Hip-Hop|131|0
+Come As You Are - Alt Version|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Indie|499|1
+Come As You Are - Rock Version|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Rock|100|1
+Come As You Are - Country Mix|Nirvana|..\\Canciones\\ComeAsYouAre.wav|224.19|Country|84|1
+Creep - Rock Version|Radiohead|..\\Canciones\\Creep.wav|236.53|Metal|252|1
+Creep - Rock Version|Radiohead|..\\Canciones\\Creep.wav|236.53|Rock|12|0
+Creep - RnB Mix|Radiohead|..\\Canciones\\Creep.wav|236.53|Soul|270|0
+Creep - RnB Mix|Radiohead|..\\Canciones\\Creep.wav|236.53|R&B|25|1
+Creep - RnB Mix|Radiohead|..\\Canciones\\Creep.wav|236.53|Blues|372|1
+Dakiti - Remix|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Electronic|386|1
+Dakiti - Alt Version|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Alternative|471|0
+Dakiti - RnB Mix|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Funk|66|0
+Dakiti - RnB Mix|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Blues|128|0
+Dakiti - Remix|Bad Bunny ft. Jhayco|..\\Canciones\\Dakiti.wav|205.12|Hip-Hop|416|1
+DNA. - Pop Version|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|K-Pop|414|0
+DNA. - Rock Version|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|Metal|190|1
+DNA. - RnB Mix|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|Funk|494|1
+DNA. - Latin Version|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|Latin|24|0
+DNA. - Rock Version|Kendrick Lamar|..\\Canciones\\DNA.wav|185.95|Metal|235|0
+Do I Wanna Know? - Alt Version|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|Indie|371|1
+Do I Wanna Know? - Latin Version|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|Latin|314|1
+Do I Wanna Know? - Alt Version|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|Alternative|275|1
+Do I Wanna Know? - RnB Mix|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|R&B|42|0
+Do I Wanna Know? - RnB Mix|Arctic Monkeys|..\\Canciones\\DoIWannaKnow.wav|265.68|Funk|482|1
+Don't You Worry Child - Rock Version|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|Metal|413|1
+Don't You Worry Child - Pop Version|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|K-Pop|460|1
+Don't You Worry Child - Rock Version|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|Rock|51|1
+Don't You Worry Child - Country Mix|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|Country|479|0
+Don't You Worry Child - Country Mix|Swedish House Mafia|..\\Canciones\\DontWorryChild.wav|212.86|Country|112|1
+Ella Baila Sola - Country Mix|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|Country|79|0
+Ella Baila Sola - Rock Version|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|Metal|242|0
+Ella Baila Sola - RnB Mix|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|R&B|226|0
+Ella Baila Sola - Remix|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|Electronic|142|1
+Ella Baila Sola - Country Mix|Eslabon Armado ft. Peso Pluma|..\\Canciones\\EllaBailaSola.wav|165.65|Country|3|0
+Feliz Cumple Ferxxo - Country Mix|Feid|..\\Canciones\\Ferxxo.wav|156.4|Country|368|1
+Feliz Cumple Ferxxo - RnB Mix|Feid|..\\Canciones\\Ferxxo.wav|156.4|Soul|205|0
+Feliz Cumple Ferxxo - Country Mix|Feid|..\\Canciones\\Ferxxo.wav|156.4|Country|51|1
+Feliz Cumple Ferxxo - Remix|Feid|..\\Canciones\\Ferxxo.wav|156.4|Hip-Hop|463|0
+Feliz Cumple Ferxxo - Jazz Version|Feid|..\\Canciones\\Ferxxo.wav|156.4|Jazz|200|1
+Firework - Jazz Version|Katy Perry|..\\Canciones\\Firework.wav|233.25|Jazz|11|0
+Firework - Remix|Katy Perry|..\\Canciones\\Firework.wav|233.25|Hip-Hop|420|1
+Firework - Rock Version|Katy Perry|..\\Canciones\\Firework.wav|233.25|Metal|253|1
+Firework - Pop Version|Katy Perry|..\\Canciones\\Firework.wav|233.25|K-Pop|338|0
+Firework - RnB Mix|Katy Perry|..\\Canciones\\Firework.wav|233.25|Blues|241|1
+Get Lucky - Alt Version|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|Alternative|396|0
+Get Lucky - RnB Mix|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|Funk|291|1
+Get Lucky - Country Mix|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|Country|264|1
+Get Lucky - RnB Mix|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|R&B|140|0
+Get Lucky - Rock Version|Daft Punk ft. Pharrell Williams|..\\Canciones\\GetLucky.wav|248.64|Metal|111|0
+Glimpse Of Us - Pop Version|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|K-Pop|443|1
+Glimpse Of Us - RnB Mix|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|Blues|225|1
+Glimpse Of Us - RnB Mix|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|R&B|221|1
+Glimpse Of Us - Pop Version|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|Pop|459|1
+Glimpse Of Us - Remix|Joji|..\\Canciones\\GlimpseOfUs.wav|233.72|Hip-Hop|388|0
+God's Plan - Rock Version|Drake|..\\Canciones\\GodsPlan.wav|198.97|Rock|170|1
+God's Plan - Rock Version|Drake|..\\Canciones\\GodsPlan.wav|198.97|Metal|429|0
+God's Plan - Rock Version|Drake|..\\Canciones\\GodsPlan.wav|198.97|Rock|24|1
+God's Plan - RnB Mix|Drake|..\\Canciones\\GodsPlan.wav|198.97|Soul|36|1
+God's Plan - RnB Mix|Drake|..\\Canciones\\GodsPlan.wav|198.97|Soul|485|0
+Goosebumps - RnB Mix|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|Funk|341|0
+Goosebumps - RnB Mix|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|Soul|5|1
+Goosebumps - Pop Version|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|K-Pop|382|0
+Goosebumps - Country Mix|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|Country|493|0
+Goosebumps - RnB Mix|Travis Scott|..\\Canciones\\Goosebumps.wav|243.84|Soul|129|1
+HUMBLE. - Alt Version|Kendrick Lamar|..\\Canciones\\Humble.wav|177|Indie|186|1
+HUMBLE. - Pop Version|Kendrick Lamar|..\\Canciones\\Humble.wav|177|K-Pop|348|1
+HUMBLE. - RnB Mix|Kendrick Lamar|..\\Canciones\\Humble.wav|177|Soul|319|0
+HUMBLE. - Latin Version|Kendrick Lamar|..\\Canciones\\Humble.wav|177|Latin|104|0
+HUMBLE. - Alt Version|Kendrick Lamar|..\\Canciones\\Humble.wav|177|Indie|210|1
+Karma Police - Pop Version|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|Pop|308|0
+Karma Police - Rock Version|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|Metal|140|0
+Karma Police - RnB Mix|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|R&B|311|1
+Karma Police - Remix|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|Hip-Hop|217|1
+Karma Police - Pop Version|Radiohead|..\\Canciones\\KarmaPolice.wav|262.47|K-Pop|414|1
+La Cancion - RnB Mix|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|Funk|468|1
+La Cancion - Rock Version|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|Metal|104|0
+La Cancion - RnB Mix|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|R&B|456|0
+La Cancion - RnB Mix|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|Blues|343|1
+La Cancion - Remix|J Balvin ft. Bad Bunny|..\\Canciones\\LaCancion.wav|243.84|Hip-Hop|375|0
+Last Nite - Rock Version|The Strokes|..\\Canciones\\LastNite.wav|201.45|Metal|245|1
+Last Nite - Country Mix|The Strokes|..\\Canciones\\LastNite.wav|201.45|Country|107|1
+Last Nite - RnB Mix|The Strokes|..\\Canciones\\LastNite.wav|201.45|Funk|285|0
+Last Nite - Remix|The Strokes|..\\Canciones\\LastNite.wav|201.45|Reggaeton|430|1
+Last Nite - Remix|The Strokes|..\\Canciones\\LastNite.wav|201.45|Electronic|352|1
+Levels - RnB Mix|Avicii|..\\Canciones\\Levels.wav|198.36|R&B|165|0
+Levels - Country Mix|Avicii|..\\Canciones\\Levels.wav|198.36|Country|173|1
+Levels - Jazz Version|Avicii|..\\Canciones\\Levels.wav|198.36|Jazz|294|0
+Levels - Remix|Avicii|..\\Canciones\\Levels.wav|198.36|Reggaeton|467|0
+Levels - RnB Mix|Avicii|..\\Canciones\\Levels.wav|198.36|R&B|448|1
+Levitating - Alt Version|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Indie|279|0
+Levitating - Rock Version|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Metal|208|1
+Levitating - Jazz Version|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Jazz|443|0
+Levitating - Alt Version|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Indie|362|1
+Levitating - Latin Version|Dua Lipa|..\\Canciones\\Levitating.wav|230.12|Latin|4|0
+Lose Yourself - Country Mix|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Country|403|1
+Lose Yourself - Country Mix|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Country|442|0
+Lose Yourself - RnB Mix|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Funk|190|1
+Lose Yourself - Pop Version|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Pop|145|1
+Lose Yourself - Latin Version|Eminem|..\\Canciones\\LoseYourself.wav|321.21|Latin|232|1
+Lucid Dreams - Pop Version|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|K-Pop|38|1
+Lucid Dreams - RnB Mix|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|Soul|186|0
+Lucid Dreams - RnB Mix|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|R&B|203|0
+Lucid Dreams - Alt Version|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|Alternative|301|1
+Lucid Dreams - Pop Version|Juice WRLD|..\\Canciones\\LucidDreams.wav|239.84|K-Pop|91|1
+Mr. Brightside - Rock Version|The Killers|..\\Canciones\\MrBrightside.wav|227.48|Rock|351|1
+Mr. Brightside - Country Mix|The Killers|..\\Canciones\\MrBrightside.wav|227.48|Country|385|1
+Mr. Brightside - Remix|The Killers|..\\Canciones\\MrBrightside.wav|227.48|Hip-Hop|67|1
+Mr. Brightside - Jazz Version|The Killers|..\\Canciones\\MrBrightside.wav|227.48|Jazz|25|0
+Mr. Brightside - RnB Mix|The Killers|..\\Canciones\\MrBrightside.wav|227.48|R&B|135|0
+Normal - RnB Mix|Feid|..\\Canciones\\Normal.wav|170.18|Funk|487|1
+Normal - Rock Version|Feid|..\\Canciones\\Normal.wav|170.18|Rock|12|0
+Normal - Latin Version|Feid|..\\Canciones\\Normal.wav|170.18|Latin|450|1
+Normal - Remix|Feid|..\\Canciones\\Normal.wav|170.18|Reggaeton|339|0
+Normal - Rock Version|Feid|..\\Canciones\\Normal.wav|170.18|Metal|302|1
+No Role Modelz - RnB Mix|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|Blues|213|1
+No Role Modelz - Pop Version|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|K-Pop|270|1
+No Role Modelz - Remix|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|Hip-Hop|348|1
+No Role Modelz - Alt Version|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|Alternative|136|0
+No Role Modelz - Latin Version|J. Cole|..\\Canciones\\NoRoleModelz.wav|292.8|Latin|46|1
+Nothing's Gonna Hurt You Baby - Jazz Version|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|Jazz|339|0
+Nothing's Gonna Hurt You Baby - Latin Version|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|Latin|348|0
+Nothing's Gonna Hurt You Baby - RnB Mix|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|R&B|191|1
+Nothing's Gonna Hurt You Baby - RnB Mix|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|R&B|379|1
+Nothing's Gonna Hurt You Baby - RnB Mix|Cigarettes After Sex|..\\Canciones\\NothingsGonnaHurt.wav|286.29|Funk|242|1
+One More Time - Remix|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Hip-Hop|113|0
+One More Time - Remix|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Electronic|264|0
+One More Time - RnB Mix|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Funk|309|1
+One More Time - Jazz Version|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Jazz|225|0
+One More Time - Pop Version|Daft Punk|..\\Canciones\\OneMoreTime.wav|320.38|Pop|253|1
+Outside - Pop Version|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Pop|272|1
+Outside - Rock Version|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Metal|71|1
+Outside - Alt Version|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Alternative|255|0
+Outside - Jazz Version|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Jazz|349|0
+Outside - Pop Version|Calvin Harris ft. Ellie Goulding|..\\Canciones\\Outside.wav|225.69|Pop|305|0
+Pretty Girl - Country Mix|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|Country|35|1
+Pretty Girl - Jazz Version|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|Jazz|169|1
+Pretty Girl - Remix|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|Electronic|475|0
+Pretty Girl - Pop Version|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|K-Pop|142|0
+Pretty Girl - RnB Mix|Clairo|..\\Canciones\\PrettyGirl.wav|178.39|Funk|243|1
+Provenza - Jazz Version|Karol G|..\\Canciones\\Provenza.wav|206.19|Jazz|159|0
+Provenza - Latin Version|Karol G|..\\Canciones\\Provenza.wav|206.19|Latin|268|0
+Provenza - Remix|Karol G|..\\Canciones\\Provenza.wav|206.19|Hip-Hop|241|1
+Provenza - Remix|Karol G|..\\Canciones\\Provenza.wav|206.19|Electronic|479|0
+Provenza - Remix|Karol G|..\\Canciones\\Provenza.wav|206.19|Hip-Hop|230|0
+Scared To Be Lonely - Alt Version|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|Alternative|445|1
+Scared To Be Lonely - RnB Mix|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|R&B|491|1
+Scared To Be Lonely - Rock Version|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|Rock|41|1
+Scared To Be Lonely - Remix|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|Electronic|461|1
+Scared To Be Lonely - Rock Version|Martin Garrix ft. Dua Lipa|..\\Canciones\\ScaredToBeLonely.wav|230.2|Metal|237|0
+Seven Nation Army - Rock Version|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Rock|288|1
+Seven Nation Army - Remix|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Hip-Hop|110|1
+Seven Nation Army - Jazz Version|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Jazz|422|0
+Seven Nation Army - RnB Mix|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Blues|471|0
+Seven Nation Army - Rock Version|The White Stripes|..\\Canciones\\SevenNationArmy.wav|238.33|Metal|223|0
+Shape of You - Remix|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Electronic|149|0
+Shape of You - RnB Mix|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Blues|387|1
+Shape of You - RnB Mix|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Soul|416|1
+Shape of You - Pop Version|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Pop|294|0
+Shape of You - Latin Version|Ed Sheeran|..\\Canciones\\ShapeOfYou.wav|263.22|Latin|494|1
+Sicko Mode - Latin Version|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Latin|478|1
+Sicko Mode - RnB Mix|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Funk|49|0
+Sicko Mode - Country Mix|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Country|158|1
+Sicko Mode - Remix|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Reggaeton|200|1
+Sicko Mode - RnB Mix|Travis Scott ft. Drake|..\\Canciones\\SickoMode.wav|322.92|Funk|80|1
+Slow Dancing In The Dark - Alt Version|Joji|..\\Canciones\\SlowDancing.wav|209.28|Indie|198|1
+Slow Dancing In The Dark - Remix|Joji|..\\Canciones\\SlowDancing.wav|209.28|Hip-Hop|83|0
+Slow Dancing In The Dark - Remix|Joji|..\\Canciones\\SlowDancing.wav|209.28|Electronic|356|1
+Slow Dancing In The Dark - Pop Version|Joji|..\\Canciones\\SlowDancing.wav|209.28|Pop|79|0
+Slow Dancing In The Dark - Rock Version|Joji|..\\Canciones\\SlowDancing.wav|209.28|Rock|315|0
+Sofia - Rock Version|Clairo|..\\Canciones\\Sofia.wav|188.43|Rock|324|1
+Sofia - Pop Version|Clairo|..\\Canciones\\Sofia.wav|188.43|K-Pop|192|0
+Sofia - Country Mix|Clairo|..\\Canciones\\Sofia.wav|188.43|Country|39|1
+Sofia - Rock Version|Clairo|..\\Canciones\\Sofia.wav|188.43|Metal|225|0
+Sofia - Remix|Clairo|..\\Canciones\\Sofia.wav|188.43|Electronic|145|1
+Space Song - Remix|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Hip-Hop|233|0
+Space Song - Remix|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Electronic|404|0
+Space Song - Pop Version|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Pop|136|1
+Space Song - Rock Version|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Rock|417|0
+Space Song - Country Mix|Beach House|..\\Canciones\\SpaceSong.wav|320.46|Country|282|1
+Stronger - RnB Mix|Kanye West|..\\Canciones\\Stronger.wav|312.03|Funk|95|1
+Stronger - RnB Mix|Kanye West|..\\Canciones\\Stronger.wav|312.03|Blues|495|1
+Stronger - RnB Mix|Kanye West|..\\Canciones\\Stronger.wav|312.03|Funk|355|1
+Stronger - RnB Mix|Kanye West|..\\Canciones\\Stronger.wav|312.03|Soul|15|1
+Stronger - RnB Mix|Kanye West|..\\Canciones\\Stronger.wav|312.03|Soul|123|1
+Style - Alt Version|Taylor Swift|..\\Canciones\\Style.wav|242.99|Indie|324|1
+Style - Remix|Taylor Swift|..\\Canciones\\Style.wav|242.99|Reggaeton|95|0
+Style - Rock Version|Taylor Swift|..\\Canciones\\Style.wav|242.99|Metal|71|1
+Style - RnB Mix|Taylor Swift|..\\Canciones\\Style.wav|242.99|Soul|205|1
+Style - Latin Version|Taylor Swift|..\\Canciones\\Style.wav|242.99|Latin|44|0
+Summer - Rock Version|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Rock|129|0
+Summer - Remix|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Hip-Hop|283|0
+Summer - RnB Mix|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Blues|429|1
+Summer - Alt Version|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Alternative|222|0
+Summer - Alt Version|Calvin Harris|..\\Canciones\\Summer.wav|222.06|Alternative|301|0
+Sunflower - Remix|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Electronic|83|1
+Sunflower - Alt Version|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Indie|129|1
+Sunflower - Rock Version|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Rock|53|1
+Sunflower - Rock Version|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Rock|116|1
+Sunflower - Alt Version|Rex Orange County|..\\Canciones\\Sunflower.wav|250.96|Alternative|309|1
+Smells Like Teen Spirit - Pop Version|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Pop|100|1
+Smells Like Teen Spirit - Remix|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Hip-Hop|472|1
+Smells Like Teen Spirit - Latin Version|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Latin|222|0
+Smells Like Teen Spirit - Alt Version|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Alternative|416|0
+Smells Like Teen Spirit - Alt Version|Nirvana|..\\Canciones\\TeenSpirit.wav|278.35|Alternative|394|1
+thank u, next - Latin Version|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|Latin|292|0
+thank u, next - RnB Mix|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|R&B|142|1
+thank u, next - RnB Mix|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|R&B|270|1
+thank u, next - Alt Version|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|Indie|16|0
+thank u, next - Rock Version|Ariana Grande|..\\Canciones\\ThankUNext.wav|207.38|Metal|487|0
+Titi Me Pregunto - RnB Mix|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Soul|406|1
+Titi Me Pregunto - Alt Version|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Alternative|190|1
+Titi Me Pregunto - RnB Mix|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Soul|26|1
+Titi Me Pregunto - Remix|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Hip-Hop|97|1
+Titi Me Pregunto - Alt Version|Bad Bunny|..\\Canciones\\TitiMePregunto.wav|243.78|Alternative|172|0
+Tusa - Rock Version|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|Rock|435|0
+Tusa - RnB Mix|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|Blues|488|1
+Tusa - RnB Mix|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|Blues|398|0
+Tusa - RnB Mix|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|Soul|180|1
+Tusa - RnB Mix|Karol G ft. Nicki Minaj|..\\Canciones\\Tusa.wav|203.84|R&B|191|0
+Uptown Funk - RnB Mix|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|Blues|212|0
+Uptown Funk - Pop Version|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|K-Pop|294|1
+Uptown Funk - Remix|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|Reggaeton|420|0
+Uptown Funk - Alt Version|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|Alternative|149|0
+Uptown Funk - RnB Mix|Mark Ronson ft. Bruno Mars|..\\Canciones\\UptownFunk.wav|270.4|Blues|143|1
+Wake Me Up - Remix|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|Hip-Hop|287|1
+Wake Me Up - RnB Mix|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|R&B|149|0
+Wake Me Up - RnB Mix|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|R&B|278|1
+Wake Me Up - Alt Version|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|Indie|98|0
+Wake Me Up - Pop Version|Avicii|..\\Canciones\\WakeMeUp.wav|251.39|K-Pop|351|1

@@ -91,7 +91,6 @@ public:
 
         wstringstream ss;
         ss << L"open \"" << rutaW << L"\" alias " << aliasW;
-
         int ret = mciSendStringW(ss.str().c_str(), NULL, 0, NULL);
         if (ret != 0) {
             wchar_t errorText[256];

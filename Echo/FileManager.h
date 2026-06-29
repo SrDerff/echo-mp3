@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -28,6 +29,50 @@ private:
     }
 
 public:
+    /*
+    Importancia:
+    Funcion fundamental de persistencia que restaura el estado completo de la
+    biblioteca musical desde el disco. Es el unico punto donde los datos del
+    archivo "Data/songsList.txt" se convierten en objetos Song en memoria.
+    Sin esta funcion la aplicacion no tendria canciones que reproducir.
+
+    BigO: O(L x F + T x (N + A + B))
+    Donde L es la cantidad de lineas del archivo, F es la cantidad de campos por
+    linea (~7: nombre, autor, fuente, duracion, genero, playcount, liked), y T
+    es la cantidad de canciones insertadas exitosamente. Por cada cancion se
+    invoca `addSongToLibrary()` que tiene su propio costo O(N + A + B) como se
+    detallo previamente. El parseo por linea involucra operaciones O(F) para
+    los `getline`, `trim`, `stof`, `stoi` y comparaciones booleanas.
+    Espacio O(T) para la biblioteca en memoria, mas O(L) temporal para el buffer
+    de lectura linea por linea.
+
+    Explicacion detallada:
+    1. Abre el archivo songsList.txt en modo lectura. Si no se puede abrir
+       (archivo faltante o sin permisos), retorna false y la biblioteca queda vacia.
+    2. Llama a `lib.clear()` para resetear la biblioteca, eliminando cualquier
+       dato previo y todos los indices. Esto asegura que una recarga no duplique
+       canciones.
+    3. Itera sobre cada linea del archivo usando `getline()`:
+       a) Elimina el caracter de retorno de carro '\r' al final si existe
+          (comun en archivos de Windows).
+       b) Aplica `trim()` para eliminar espacios en blanco al inicio y final.
+       c) Ignora lineas vacias.
+    4. Para cada linea no vacia, usa un `stringstream` y extrae los 7 campos
+       separados por '|' mediante `getline(ss, campo, '|')`:
+       - name, author, source, durationStr, genre, playCountStr, likedStr.
+    5. Crea una matriz dummy de 25x25 para la caratula (placeholder, no se usa).
+    6. Convierte los campos numericos:
+       - `durationStr` -> float con `stof()`. Si falla, usa 0.0.
+       - `playCountStr` -> int con `stoi()`. Si falla, usa 0.
+       - `likedStr` -> bool: true si es "1", "true" o "True".
+    7. Construye un objeto `Song(name, author, source, duration, genre, dummyImg,
+       playCount, liked)` y lo inserta en la biblioteca mediante `addSongToLibrary()`,
+       que se encarga de indexarlo en todas las estructuras auxiliares.
+    8. Si alguna linea esta mal formada (exception en stof/stoi), el catch(...)
+       la ignora silenciosamente y continua con la siguiente linea, garantizando
+       que el resto del archivo se cargue correctamente.
+    9. Cierra el archivo y retorna true indicando exito.
+    */
     static bool loadSongs(MusicLibrary& lib, const string& filename = "..\\Data\\songsList.txt") {
         ifstream file(filename);
         if (!file.is_open()) return false;
@@ -160,6 +205,174 @@ public:
         return true;
     }
 
+    /*
+    Importancia:
+    Generador de datasets de prueba que expande las canciones originales del archivo
+    "Data/songsList.txt" en un conjunto multiplo con metadatos variados (genero,
+    playcount, liked) y sufijos en el nombre. Es la unica herramienta para crear
+    datos de prueba masivos sin necesidad de archivos de audio adicionales, permitiendo
+    evaluar el rendimiento de los algoritmos de ordenamiento (MergeSort, QuickSort,
+    HeapSort) y de las estructuras de datos (HashTable, RedBlackTree, AVLTree) con
+    cargas de trabajo realistas. Sin esta funcion, las pruebas de rendimiento estarian
+    limitadas a las 60 canciones originales.
+
+    BigO: O(B x M + T x G)
+    Donde B es la cantidad de canciones en el archivo backup (~60), M es el multiplicador
+    (default 5), y T es el total de lineas generadas (B x M). Por cada linea de
+    salida se ejecutan en O(1): seleccion aleatoria de genero, consulta de sufijo,
+    generacion de playCount y liked, y escritura formateada. El parseo de cada
+    linea plantilla es O(F) donde F son los 7 campos separados por '|'.
+    Espacio O(T + B) en memoria: O(B) para almacenar las lineas plantilla y O(1)
+    adicional para el buffer de escritura linea por linea. En disco se escriben
+    T lineas (el nuevo songsList.txt) y se preserva el backup original con B lineas.
+
+    Explicacion detallada:
+    1. Verifica si el archivo de backup "songsList_backup.txt" existe en disco.
+       - Si NO existe: es la primera ejecucion del programa tras agregar el
+         generador. Abre el songsList.txt actual, copia cada linea intacta al
+         backup, y cierra ambos archivos. Esto preserva el dataset original.
+       - Si SI existe: salta la creacion del backup, pues ya fue respaldado
+         en una ejecucion anterior. El backup jamas se sobrescribe.
+    2. Abre el archivo de backup en modo lectura como plantilla base. Si no se
+       puede abrir (archivo faltante o sin permisos), retorna false.
+    3. Inicializa la semilla del generador aleatorio con `srand(time(nullptr))`
+       para que cada ejecucion produzca datos distintos.
+    4. Define un arreglo de estructuras `GenreSuffix` que mapea cada uno de los
+       16 generos a un sufijo textual (ej: "Hip-Hop" -> " - Remix", "Rock" ->
+       " - Rock Version"). Esto asegura que el nombre mostrado en pantalla
+       refleje el genero asignado.
+    5. Itera sobre cada linea del backup usando `getline()`:
+       a) Elimina el caracter de retorno de carro '\r' al final si existe.
+       b) Aplica `trim()` para eliminar espacios en blanco al inicio y final.
+       c) Ignora lineas vacias.
+       d) Agrega la linea limpia al vector `templateLines`.
+    6. Cierra el archivo de backup y abre (o sobrescribe) el archivo de salida
+       "Data/songsList.txt" en modo escritura.
+    7. Para cada linea plantilla en `templateLines`:
+       a) Usa un `stringstream` para extraer los 7 campos separados por '|':
+          name, author, source, durationStr, genre, playCountStr, likedStr.
+       b) Repite `multiplier` veces (default 5):
+          i)  Selecciona un indice aleatorio entre 0 y 15 (16 generos).
+          ii) Obtiene el genero y el sufijo correspondiente desde `genreMap`.
+          iii) Genera playCount aleatorio entre 0 y 500 (`rand() % 501`).
+          iv) Genera liked aleatorio (0 o 1) mediante `rand() % 2`.
+          v)  Escribe la linea de salida en el formato:
+              `nombre + sufijo | autor | source | duracion | genero | playCount | liked`
+    8. Cierra el archivo de salida y retorna true indicando exito.
+    */
+    static bool generateDataset(int multiplier = 5, const string& outputFilename = "..\\Data\\songsList.txt", const string& backupFilename = "..\\Data\\songsList_backup.txt") {
+        // Primera ejecucion: crear backup desde el songsList.txt original
+        {
+            ifstream checkBackup(backupFilename);
+            bool backupExists = checkBackup.is_open();
+            checkBackup.close();
+
+            if (!backupExists) {
+                ifstream original(outputFilename);
+                if (!original.is_open()) return false;
+                ofstream backup(backupFilename);
+                string line;
+                while (getline(original, line)) {
+                    backup << line << "\n";
+                }
+                original.close();
+                backup.close();
+            }
+        }
+
+        // Leer siempre desde el backup (original limpio)
+        ifstream input(backupFilename);
+        if (!input.is_open()) return false;
+
+        srand(static_cast<unsigned>(time(nullptr)));
+
+        struct GenreSuffix {
+            const char* genre;
+            const char* suffix;
+        };
+        GenreSuffix genreMap[] = {
+            {"Hip-Hop", " - Remix"},
+            {"Electronic", " - Remix"},
+            {"Reggaeton", " - Remix"},
+            {"Rock", " - Rock Version"},
+            {"Metal", " - Rock Version"},
+            {"Pop", " - Pop Version"},
+            {"K-Pop", " - Pop Version"},
+            {"Alternative", " - Alt Version"},
+            {"Indie", " - Alt Version"},
+            {"R&B", " - RnB Mix"},
+            {"Soul", " - RnB Mix"},
+            {"Funk", " - RnB Mix"},
+            {"Blues", " - RnB Mix"},
+            {"Jazz", " - Jazz Version"},
+            {"Country", " - Country Mix"},
+            {"Latin", " - Latin Version"}
+        };
+        const int genreCount = sizeof(genreMap) / sizeof(genreMap[0]);
+
+        vector<string> templateLines;
+        string line;
+        while (getline(input, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            line = trim(line);
+            if (!line.empty()) templateLines.push_back(line);
+        }
+        input.close();
+
+        ofstream output(outputFilename);
+        if (!output.is_open()) return false;
+
+        for (const string& tpl : templateLines) {
+            stringstream ss(tpl);
+            string name, author, source, durationStr, genre, playCountStr, likedStr;
+            getline(ss, name, '|');
+            getline(ss, author, '|');
+            getline(ss, source, '|');
+            getline(ss, durationStr, '|');
+            getline(ss, genre, '|');
+            getline(ss, playCountStr, '|');
+            getline(ss, likedStr, '|');
+
+            for (int i = 0; i < multiplier; ++i) {
+                int idx = rand() % genreCount;
+                string newGenre = genreMap[idx].genre;
+                string suffix = genreMap[idx].suffix;
+                int newPlayCount = rand() % 501;
+                int newLiked = rand() % 2;
+                output << name << suffix << "|" << author << "|" << source << "|"
+                    << durationStr << "|" << newGenre << "|"
+                    << newPlayCount << "|" << newLiked << "\n";
+            }
+        }
+
+        output.close();
+        return true;
+    }
+
+    /*
+    Importancia:
+    Funcion de alto nivel que orquesta la restauracion completa del estado persistido
+    de la aplicacion. Es llamada desde `AppController::AppController()` al iniciar
+    el programa. Sin esta funcion la biblioteca musical arrancarfa vacia cada vez.
+
+    BigO: O(S + P + C)
+    Donde S es la cantidad de canciones en el archivo songsList.txt, P es la cantidad
+    de playlists en playlists.txt, y C es la cantidad total de referencias a canciones
+    dentro de todas las playlists. Cada cancion cargada invoca `addSongToLibrary()`
+    que a su vez inserta en todos los indices auxiliares (O(N + A + B) por cancion).
+    Espacio O(N) adicional para almacenar en memoria toda la biblioteca resultante.
+
+    Explicacion detallada:
+    1. Llama a `loadSongs()` que abre "Data/songsList.txt", lee linea por linea,
+       parsea los campos separados por '|', construye objetos Song y los inserta
+       en la biblioteca mediante `addSongToLibrary()`.
+    2. Llama a `loadPlaylists()` que abre "Data/playlists.txt", lee nombres de
+       playlists seguidos de referencias a canciones (rutas de archivo) hasta
+       encontrar la marca "[ENDPLAYLIST]", y las rellena buscando cada cancion
+       en la biblioteca ya cargada mediante `findSongBySource()`.
+    3. Retorna true solo si ambas operaciones fueron exitosas; si falla alguna,
+       la biblioteca puede quedar en un estado parcialmente cargado.
+    */
     static bool loadLibrary(MusicLibrary& lib) {
         bool songsOk = loadSongs(lib);
         bool playlistsOk = loadPlaylists(lib);

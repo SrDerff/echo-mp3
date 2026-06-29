@@ -13,8 +13,10 @@ using namespace std;
 enum class Tab {
     LIBRARY = 1,
     PLAYLISTS = 2,
-    QUEUE = 3,
-    SEARCH = 4
+    LIKED = 3,
+    RECOMMENDATIONS = 4,
+    QUEUE = 5,
+    SEARCH = 6
 };
 
 class AppController
@@ -38,8 +40,19 @@ private:
     int playlistSongsSelectedIndex;
     int playlistSongsTopIndex;
 
+    int likedSelectedIndex;
+    int likedTopIndex;
+
+    int recommendationsSelectedIndex;
+    int recommendationsTopIndex;
+
     int queueSelectedIndex;
     int queueTopIndex;
+
+    bool durationSortAscending;
+    bool durationSortActive;
+    bool recommendationsSortAscending;
+    bool recommendationsSortActive;
 
     // Estado de busqueda (copias seguras, no punteros)
     vector<Song> searchResults;
@@ -55,15 +68,22 @@ private:
     void moveUp();
     void playSelectedSong();
     void playSelectedPlaylistSong();
+    void playSelectedLikedSong();
+    void playSelectedRecommendationSong();
     void addSelectedSongToPlaylist();
     void removeSelectedSongFromPlaylist();
     string captureTextInput(const string& prompt);
+    void toggleLikedSelectedSong();
 
     // Helpers de busqueda
     void moveDownSearch();
     void moveUpSearch();
     void performSearch();
     void playSelectedSearchSong();
+    Song getLibrarySongAtVisibleIndex(int visibleIndex);
+    Song getLikedSongAtVisibleIndex(int visibleIndex);
+    Song getRecommendationSongAtVisibleIndex(int visibleIndex);
+    vector<RecommendationItem> getSortedRecommendations();
 
     void moveDownQueue();
     void moveUpQueue();
