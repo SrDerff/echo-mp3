@@ -80,6 +80,14 @@
     <ClInclude Include="CircularDoublyLinkedList.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="MergeSort.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSort.h" />
+    <ClInclude Include="HeapSort.h" />
+    <ClInclude Include="HashTable.h" />
+    <ClInclude Include="RedBlackTree.h" />
+    <ClInclude Include="AVLTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

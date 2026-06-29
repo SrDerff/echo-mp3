@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Node.h"
 #include <stdexcept>
 
@@ -24,9 +24,62 @@ private:
 
 public:
     /**
-     * @brief Constructor. Inicializa lista vacia con punteros nulos y tamaño 0.
+     * @brief Constructor. Inicializa lista vacia con punteros nulos y tamano 0.
      */
     DoublyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+    /**
+     * @brief Constructor de copia. Crea una copia profunda de la lista.
+     */
+    DoublyLinkedList(const DoublyLinkedList& other) : head(nullptr), tail(nullptr), size(0) {
+        Node<T>* current = other.head;
+        while (current != nullptr) {
+            insertAtTail(current->getValue());
+            current = current->next;
+        }
+    }
+
+    /**
+     * @brief Operador de asignacion por copia. Crea una copia profunda.
+     */
+    DoublyLinkedList& operator=(const DoublyLinkedList& other) {
+        if (this == &other) return *this;
+
+        clear();
+        Node<T>* current = other.head;
+        while (current != nullptr) {
+            insertAtTail(current->getValue());
+            current = current->next;
+        }
+        return *this;
+    }
+
+    /**
+     * @brief Constructor de movimiento.
+     */
+    DoublyLinkedList(DoublyLinkedList&& other) noexcept
+        : head(other.head), tail(other.tail), size(other.size) {
+        other.head = nullptr;
+        other.tail = nullptr;
+        other.size = 0;
+    }
+
+    /**
+     * @brief Operador de asignacion por movimiento.
+     */
+    DoublyLinkedList& operator=(DoublyLinkedList&& other) noexcept {
+        if (this == &other) return *this;
+
+        clear();
+        head = other.head;
+        tail = other.tail;
+        size = other.size;
+
+        other.head = nullptr;
+        other.tail = nullptr;
+        other.size = 0;
+        return *this;
+    }
 
     /**
      * @brief Destructor. Libera la memoria de cada nodo secuencialmente.
