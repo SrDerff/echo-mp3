@@ -27,6 +27,7 @@ private:
     Tab currentTab;
     int currentTabIndex;
     GestorAudio audio;
+	User currentUser;
 
     int librarySelectedIndex;
     int libraryTopIndex;
@@ -53,6 +54,9 @@ private:
     bool durationSortActive;
     bool recommendationsSortAscending;
     bool recommendationsSortActive;
+
+    bool showingWelcome;
+    int welcomeSelectedIndex;
 
     // Estado de busqueda (copias seguras, no punteros)
     vector<Song> searchResults;
@@ -88,6 +92,9 @@ private:
     void moveDownQueue();
     void moveUpQueue();
     void playSelectedQueueSong();
+    void moveDownWelcome();
+    void moveUpWelcome();
+    void enterWelcomeOption();
 
 public:
     AppController();

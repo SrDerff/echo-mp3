@@ -23,13 +23,12 @@ private:
     string genre;       ///< Genero musical (o album si se prefiere).
     char img[25][25];   ///< Matriz de caracteres ASCII para "caratula" en consola.
     int count;
-    bool liked;
 public:
     /**
      * @brief Constructor por defecto. Inicializa strings vacios y duracion 0.
      * memset se usa para llenar la matriz img con espacios en blanco.
      */
-    Song() : name(""), author(""), source(""), duration(0.0f), genre(""), count(0), liked(false) {
+    Song() : name(""), author(""), source(""), duration(0.0f), genre(""), count(0){
         clearImg();
     }
 
@@ -46,8 +45,8 @@ public:
      *
      * Se copia la matriz img elemento por elemento para evitar compartir memoria.
      */
-    Song(string name, string author, string source, float duration, string genre, char img[25][25], int count, bool liked)
-        : name(name), author(author), source(source), duration(duration), genre(genre), count(count), liked(liked) {
+    Song(string name, string author, string source, float duration, string genre, char img[25][25], int count)
+        : name(name), author(author), source(source), duration(duration), genre(genre), count(count){
         for (int i = 0; i < 25; i++)
             for (int j = 0; j < 25; j++)
                 this->img[i][j] = img[i][j];
@@ -62,7 +61,6 @@ public:
     float getDuration() const { return duration; }
     string getGenre() const { return genre; }
     int getPlayCount() const { return count; }
-    bool isLiked() const { return liked; }
 
     // --- Setters ---
     void setName(const string& n) { name = n; }
@@ -71,8 +69,7 @@ public:
     void setDuration(float d) { duration = d; }
     void setGenre(const string& g) { genre = g; }
     void setPlayCount(int count) { this->count = count; }
-    void setLiked(bool value) { liked = value; }
-
+    
     void getImg(char dest[25][25]) const {
         for (int i = 0; i < 25; i++)
             for (int j = 0; j < 25; j++)

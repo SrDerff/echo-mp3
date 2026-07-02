@@ -16,6 +16,43 @@ private:
 public:
     Stack() : topNode(nullptr), count(0) {}
 
+    Stack(const Stack& other) : topNode(nullptr), count(0) {
+        if (other.isEmpty()) return;
+        StackNode* otherCurr = other.topNode;
+        StackNode* last = nullptr;
+        while (otherCurr) {
+            StackNode* newNode = new StackNode(otherCurr->data);
+            if (!topNode) {
+                topNode = newNode;
+            } else {
+                last->next = newNode;
+            }
+            last = newNode;
+            otherCurr = otherCurr->next;
+        }
+        count = other.count;
+    }
+
+    Stack& operator=(const Stack& other) {
+        if (this != &other) {
+            while (!isEmpty()) pop();
+            if (other.isEmpty()) return *this;
+            StackNode* otherCurr = other.topNode;
+            StackNode* last = nullptr;
+            while (otherCurr) {
+                StackNode* newNode = new StackNode(otherCurr->data);
+                if (!topNode) {
+                    topNode = newNode;
+                } else {
+                    last->next = newNode;
+                }
+                last = newNode;
+                otherCurr = otherCurr->next;
+            }
+            count = other.count;
+        }
+        return *this;
+    }
 
     ~Stack() {
         while (!isEmpty()) pop();

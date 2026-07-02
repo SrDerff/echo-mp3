@@ -24,6 +24,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{5f8f001e-ec25-4863-9cba-275e093f3ac1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Auth">
+      <UniqueIdentifier>{ac85024f-9e71-4b24-b086-ae16ccd8c9df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interface.h">
@@ -88,6 +91,18 @@
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="AVLTree.h" />
+    <ClInclude Include="User.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="UserManager.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="EchoService.h">
+      <Filter>Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

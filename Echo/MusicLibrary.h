@@ -19,15 +19,10 @@ using uint = unsigned int;
 
 class MusicLibrary {
 private:
-    int currentPlaylistIndex;
-public:
-    vector<Playlist> playlists;
-private:
     DoublyLinkedList<Song> allSongs;
     CircularDoublyLinkedList<Song> queue;
     vector<Artist> artists;
     vector<Album> albums;
-    Stack<Song> sessionHistory;
 
     // ===== INDICES PARA BUSQUEDA OPTIMIZADA =====
     HashTable<string, Song*> indexBySource;           // O(1) por ruta de archivo
@@ -49,7 +44,7 @@ private:
         return key;
     }
 
-    static bool isKnownGenre(const string& genre) {
+public: bool isKnownGenre(const string& genre) {
         return genre == "Rock" || genre == "Pop" || genre == "Hip Hop"
             || genre == "Latin" || genre == "Electronic" || genre == "Ballad";
     }
@@ -130,38 +125,8 @@ private:
     }
 
 public:
-    MusicLibrary() : currentPlaylistIndex(-1) {
-        playlists.reserve(100);
-    }
-
-    void addPlaylist(const string& name) {
-        playlists.emplace_back(name);
-        if (currentPlaylistIndex == -1) currentPlaylistIndex = 0;
-    }
-
-    void removePlaylist(int index) {
-        if (index >= 0 && index < (int)playlists.size()) {
-            if (currentPlaylistIndex == index) currentPlaylistIndex = -1;
-            playlists.erase(playlists.begin() + index);
-            if (currentPlaylistIndex >= (int)playlists.size())
-                currentPlaylistIndex = playlists.empty() ? -1 : 0;
-        }
-    }
-
-    Playlist* getPlaylist(int index) {
-        if (index >= 0 && index < (int)playlists.size()) return &playlists[index];
-        return nullptr;
-    }
-
-    Playlist* getCurrentPlaylist() {
-        return getPlaylist(currentPlaylistIndex);
-    }
-
-    int getPlaylistCount() const { return playlists.size(); }
-    int getCurrentIndex() const { return currentPlaylistIndex; }
-
-    void sortPlaylistsBySongCount(bool ascending) {
-        HeapSort::sortBySongCount(playlists, ascending);
+    MusicLibrary(){
+        
     }
 
     /*
@@ -270,12 +235,15 @@ public:
         return ptr ? *ptr : nullptr;
     }
 
-    bool toggleLikedBySource(const string& source) {
-        Song* song = findSongBySource(source);
-        if (song == nullptr) return false;
-        song->setLiked(!song->isLiked());
-        return true;
-    }
+    Song* findSongByName(const string& name) {
+        Node<Song>* curr = allSongs.getHead();
+        while(curr!=nullptr && curr->getValue().getName() != name) {
+            curr = curr->next;
+		}
+		return curr ? &(curr->getValue()) : nullptr;
+	}
+
+    /**/
 
     void removeSongFromLibrary(const Song& song) {
         allSongs.removeNode(song);
@@ -304,10 +272,10 @@ public:
 
     DoublyLinkedList<Song>* getAllSongs() { return &allSongs; }
 
-    void addSongToPlaylist(int playlistIndex, const Song& song) {
+    /*void addSongToPlaylist(int playlistIndex, const Song& song) {
         Playlist* p = getPlaylist(playlistIndex);
         if (p) p->addSong(song);
-    }
+    }*/
 
     vector<Song*> getSongsSortedByName() {
         vector<Song*> all = getAllSongPtrs();
@@ -339,17 +307,7 @@ public:
         return songs;
     }
 
-    vector<Song> getLikedSongsVector() {
-        vector<Song> likedSongs;
-        Node<Song>* curr = allSongs.getHead();
-        while (curr != nullptr) {
-            if (curr->getValue().isLiked()) {
-                likedSongs.push_back(curr->getValue());
-            }
-            curr = curr->next;
-        }
-        return likedSongs;
-    }
+    /**/
 
     /*
     Importancia:
@@ -386,89 +344,17 @@ public:
     7. Retorna el vector que luego puede ser ordenado por QuickSort segun el
        puntaje para mostrar las mas relevantes primero.
     */
-    vector<RecommendationItem> getRecommendedSongs() {
-        vector<RecommendationItem> recommendations;
-        vector<Song> allSongsVector = getAllSongsVector();
-        vector<Song> likedSongs = getLikedSongsVector();
 
-        if (allSongsVector.empty()) {
-            return recommendations;
-        }
+    /**/
 
-        uint historyCount = sessionHistory.size();
+    /**/
 
-        for (const Song& song : allSongsVector) {
-            if (song.isLiked()) continue;
-
-            int score = 0;
-
-            for (uint i = 0; i < historyCount; ++i) {
-                Song listenedSong = sessionHistory.getAt(i);
-                if (song.getAuthor() == listenedSong.getAuthor()) {
-                    score += 10;
-                }
-                if (isKnownGenre(song.getGenre()) && isKnownGenre(listenedSong.getGenre()) && song.getGenre() == listenedSong.getGenre()) {
-                    score += 15;
-                }
-            }
-
-            for (const Song& likedSong : likedSongs) {
-                if (isKnownGenre(song.getGenre()) && isKnownGenre(likedSong.getGenre()) && song.getGenre() == likedSong.getGenre()) {
-                    score += 20;
-                }
-            }
-
-            recommendations.emplace_back(song, score, "");
-        }
-
-        return recommendations; 
-    }
-
-    void addToSessionHistory(const Song& song) {
-        if (!sessionHistory.isEmpty()) {
-            Song top = sessionHistory.top();
-            if (top.getSource() == song.getSource()) return;
-        }
-        sessionHistory.push(song);
-    }
-
-    Stack<Song>* getSessionHistory() { return &sessionHistory; }
-
-    void createDailyPlaylist() {
-        vector<Song> all = getAllSongsVector();
-        if (all.empty()) {
-            cout << "No hay canciones en la biblioteca.\n";
-            return;
-        }
-
-        addPlaylist("Daily Mix");
-        Playlist* p = getPlaylist(getPlaylistCount() - 1);
-
-        if (!p) return;
-
-        srand(time(nullptr));
-
-        for (int i = static_cast<int>(all.size()) - 1; i > 0; --i) {
-            int j = rand() % (i + 1);
-            Song temp = all[i];
-            all[i] = all[j];
-            all[j] = temp;
-        }
-
-        size_t limit = all.size() < size_t(10) ? all.size() : size_t(10);
-
-        for (size_t i = 0; i < limit; ++i) {
-            p->addSong(all[i]);
-        }
-    }
+    /**/
 
     void clear() {
-        playlists.clear();
-        currentPlaylistIndex = -1;
         allSongs.clear();
         artists.clear();
         albums.clear();
-        sessionHistory.clear();
 
         indexBySource.clear();
         indexByArtist.clear();

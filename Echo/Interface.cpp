@@ -3,6 +3,7 @@
 #include "Background.h"
 #include <windows.h>
 #include "covers.h"
+#include "User.h"
 
 using namespace std;
 
@@ -311,8 +312,8 @@ void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selecte
     }
 }
 
-void Interface::drawLikedRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
-    vector<Song> songs = library.getLikedSongsVector();
+void Interface::drawLikedRows(int x, int y, MusicLibrary& library, User& user, int selectedIndex, int topIndex) {
+    vector<Song> songs = user.getLikedSongsVector(library);
 
     int currentIndex = 0;
     int drawnRows = 0;
@@ -362,8 +363,8 @@ void Interface::drawLikedRows(int x, int y, MusicLibrary& library, int selectedI
     }
 }
 
-void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
-    vector<RecommendationItem> recommendations = library.getRecommendedSongs();
+void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    vector<RecommendationItem> recommendations = user.getRecommendedSongs(library);
 
     if (recommendationsSortActive && !recommendations.empty()) {
         QuickSort::quickSort(recommendations, 0, (int)recommendations.size() - 1, recommendationsSortAscending);
@@ -417,12 +418,12 @@ void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, int 
     }
 }
 
-void Interface::drawPlaylistsRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::drawPlaylistsRows(int x, int y, User& currentUser, int selectedIndex, int topIndex) {
     int currentIndex = topIndex;
     int drawnRows = 0;
 
-    while (currentIndex < library.getPlaylistCount() && drawnRows < kLibraryVisibleRows) {
-        Playlist* playlist = library.getPlaylist(currentIndex);
+    while (currentIndex < currentUser.getPlaylistCount() && drawnRows < kLibraryVisibleRows) {
+        Playlist* playlist = currentUser.getPlaylist(currentIndex);
         if (playlist == nullptr) break;
 
         int yy = y + drawnRows * 2;
@@ -614,35 +615,35 @@ void Interface::displayLibrary(MusicLibrary& library, int selectedIndex, int top
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayLiked(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayLiked(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 3);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 3);
-    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+    drawLikedRows(4, 17, library, user, selectedIndex, topIndex);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayRecommendations(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+void Interface::displayRecommendations(MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 4);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 4);
-    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
+    drawRecommendationRows(4, 17, library, user, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayPlaylists(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayPlaylists(User& currentUser, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 2);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 2);
-    drawPlaylistsRows(4, 17, library, selectedIndex, topIndex);
+    drawPlaylistsRows(4, 17, currentUser, selectedIndex, topIndex);
 
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
 }
@@ -786,13 +787,13 @@ void Interface::drawPlaylistSongsRows(
     }
 }
 
-void Interface::displayQueue(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayQueue(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 5);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 5);
-    displayQueueSongs(*library.getSessionHistory(), selectedIndex, topIndex);
+    displayQueueSongs(*user.getSessionHistory(), selectedIndex, topIndex);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
@@ -838,16 +839,189 @@ void Interface::displayHelp() {
     writeAt(187, 55, ": Salir", 220, 220, 220);
 }
 
+void Interface::displayWelcomeScreen(int selectedIndex) {
+    const int cyanR = 0;
+    const int cyanG = 220;
+    const int cyanB = 230;
+    const int purpleR = 210;
+    const int purpleG = 110;
+    const int purpleB = 255;
+    const int yellowR = 255;
+    const int yellowG = 210;
+    const int yellowB = 90;
+    const int whiteR = 225;
+    const int whiteG = 226;
+    const int whiteB = 235;
+    const int dimR = 150;
+    const int dimG = 150;
+    const int dimB = 175;
+    const int darkR = 18;
+    const int darkG = 35;
+    const int darkB = 55;
+
+    auto line = [this](int x, int y, int len, int r, int g, int b) {
+        hLine(x, y, len, char(196), r, g, b);
+    };
+
+    auto framedBox = [this](int x, int y, int w, int h, int r, int g, int b) {
+        drawBox(x, y, w, h, r, g, b);
+    };
+
+    auto center = [this](int y, const string& text, int r, int g, int b) {
+        int x = 100 - static_cast<int>(text.size()) / 2;
+        writeAt(x, y, text, r, g, b);
+    };
+
+    // Limpia sin cambiar el fondo de la consola.
+    for (int y = 0; y < 60; ++y) {
+        writeAt(0, y, string(200, ' '), whiteR, whiteG, whiteB);
+    }
+
+    framedBox(2, 1, 196, 58, cyanR, cyanG, cyanB);
+    line(3, 7, 194, cyanR, cyanG, cyanB);
+    line(3, 54, 194, cyanR, cyanG, cyanB);
+
+    writeAt(6, 4, "| Welcome |", 200, 200, 230);
+    writeAt(176, 3, "Music Player CLI", cyanR, cyanG, cyanB);
+    writeAt(186, 5, "v1.0.0", yellowR, yellowG, yellowB);
+
+    framedBox(60, 10, 80, 10, cyanR, cyanG, cyanB);
+    center(13, "M U S I C   P L A Y E R   C L I", cyanR, cyanG, cyanB);
+    center(16, "Tu musica. Tu estilo. En consola.", yellowR, yellowG, yellowB);
+
+    writeAt(76, 24, "--------", cyanR, cyanG, cyanB);
+    writeAt(86, 24, "*", cyanR, cyanG, cyanB);
+    center(24, "Bienvenido", purpleR, purpleG, purpleB);
+    writeAt(112, 24, "*", cyanR, cyanG, cyanB);
+    writeAt(116, 24, "--------", cyanR, cyanG, cyanB);
+    center(27, "Disfruta tu musica favorita desde la terminal.", whiteR, whiteG, whiteB);
+    line(64, 30, 34, 0, 140, 160);
+    writeAt(99, 30, "<>", cyanR, cyanG, cyanB);
+    line(103, 30, 34, 0, 140, 160);
+
+    const int optColorsInit[3][3] = {
+        {137, 172, 118},
+        {201, 193, 105},
+        {204, 113, 98}
+    };
+
+    const string options[] = {
+        "[1]  Iniciar sesion",
+        "[2]  Registrarse",
+        "[3]  Salir del programa"
+    };
+
+    for (int i = 0; i < 3; ++i) {
+        int y = 38 + i * 4;
+        bool selected = (selectedIndex == i);
+        int r = optColorsInit[i][0], g = optColorsInit[i][1], b = optColorsInit[i][2];
+        if (selected) {
+            fillRect(59, y - 1, 82, 3, ' ', 255, 255, 255, r, g, b);
+            writeAt(61, y, ">", 255, 255, 255, r, g, b);
+            writeAt(64, y, options[i], 255, 255, 255, r, g, b);
+            writeAt(137, y, ">>", 255, 255, 255, r, g, b);
+        }
+        else {
+            writeAt(64, y, options[i], 255, 255, 255);
+        }
+    }
+
+    center(52, "Usa flechas ARRIBA/ABAJO y presiona [Enter] para seleccionar", 200, 190, 230);
+    writeAt(5, 56, "Desarrollado en C++", dimR, dimG, dimB);
+    writeAt(145, 56, "Presiona [Esc] en cualquier momento para salir", dimR, dimG, dimB);
+
+    // Decoracion lateral izquierda.
+    writeAt(8, 10, ". . . . . . . . . . . . .", 70, 170, 190);
+    writeAt(9, 13, "|\\   /|", 170, 180, 220);
+    writeAt(9, 15, "| \\\\v/ |", cyanR, cyanG, cyanB);
+    writeAt(9, 17, "|  \\/  |", cyanR, cyanG, cyanB);
+    writeAt(9, 20, "|  --  |", purpleR, purpleG, purpleB);
+    writeAt(7, 30, "+", purpleR, purpleG, purpleB);
+    writeAt(10, 34, "|", cyanR, cyanG, cyanB);
+    writeAt(10, 37, "|", cyanR, cyanG, cyanB);
+    writeAt(10, 41, "+", purpleR, purpleG, purpleB);
+    writeAt(16, 25, "<>", purpleR, purpleG, purpleB);
+    writeAt(16, 33, "o", purpleR, purpleG, purpleB);
+    writeAt(18, 37, "|", cyanR, cyanG, cyanB);
+    writeAt(18, 39, "|", cyanR, cyanG, cyanB);
+    writeAt(14, 49, "------  ------", 70, 170, 190);
+
+    // Decoracion lateral derecha.
+    writeAt(168, 10, ". . . . . . . . . . . . .", 70, 170, 190);
+    writeAt(179, 13, "|/   \\|", 170, 180, 220);
+    writeAt(179, 15, "|/   \\|", cyanR, cyanG, cyanB);
+    writeAt(179, 17, "| \\\\v/ |", cyanR, cyanG, cyanB);
+    writeAt(179, 20, "|  -- |", purpleR, purpleG, purpleB);
+    writeAt(190, 30, "+", purpleR, purpleG, purpleB);
+    writeAt(187, 34, "|", cyanR, cyanG, cyanB);
+    writeAt(187, 37, "|", cyanR, cyanG, cyanB);
+    writeAt(187, 41, "+", purpleR, purpleG, purpleB);
+    writeAt(184, 25, "<>", purpleR, purpleG, purpleB);
+    writeAt(190, 44, "o", purpleR, purpleG, purpleB);
+    writeAt(182, 37, "|", cyanR, cyanG, cyanB);
+    writeAt(182, 39, "|", cyanR, cyanG, cyanB);
+    writeAt(168, 49, "------  ------", 70, 170, 190);
+
+    const int leftX = 10;
+    const int rightX = 154;
+    const int bars[] = { 1, 3, 2, 7, 4, 3, 6, 2, 1, 4, 3, 2 };
+    for (int i = 0; i < 12; ++i) {
+        int r = (i % 3 == 0) ? purpleR : cyanR;
+        int g = (i % 3 == 0) ? purpleG : cyanG;
+        int b = (i % 3 == 0) ? purpleB : cyanB;
+        for (int j = 0; j < bars[i]; ++j) {
+            writeAt(leftX + i * 3, 47 - j, "-", r, g, b);
+            writeAt(rightX + i * 3, 47 - j, "-", r, g, b);
+        }
+    }
+
+    framedBox(55, 34, 90, 16, cyanR, cyanG, cyanB);
+    framedBox(81, 33, 38, 3, cyanR, cyanG, cyanB);
+    fillRect(82, 34, 36, 1, ' ', cyanR, cyanG, cyanB);
+    writeAt(90, 34, "Selecciona una opcion", cyanR, cyanG, cyanB);
+}
+
+void Interface::refreshWelcomeSelection(int previousSelectedIndex, int selectedIndex) {
+    const int optColors[3][3] = {
+        {137, 172, 118},
+        {201, 193, 105},
+        {204, 113, 98}
+    };
+
+    const string options[] = {
+        "[1]  Iniciar sesion",
+        "[2]  Registrarse",
+        "[3]  Salir del programa"
+    };
+
+    if (previousSelectedIndex >= 0 && previousSelectedIndex < 3 && previousSelectedIndex != selectedIndex) {
+        int y = 38 + previousSelectedIndex * 4;
+        fillRect(59, y - 1, 82, 3, ' ', 0, 0, 0);
+        writeAt(64, y, options[previousSelectedIndex], 255, 255, 255);
+    }
+
+    if (selectedIndex >= 0 && selectedIndex < 3) {
+        int y = 38 + selectedIndex * 4;
+        int r = optColors[selectedIndex][0];
+        int g = optColors[selectedIndex][1];
+        int b = optColors[selectedIndex][2];
+        fillRect(59, y - 1, 82, 3, ' ', 255, 255, 255, r, g, b);
+        writeAt(61, y, ">", 255, 255, 255, r, g, b);
+        writeAt(64, y, options[selectedIndex], 255, 255, 255, r, g, b);
+        writeAt(137, y, ">>", 255, 255, 255, r, g, b);
+    }
+}
+
 void Interface::refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending) {
     drawLibraryRows(4, 17, library, selectedIndex, topIndex, durationSortActive, durationSortAscending);
 }
 
-void Interface::refreshLikedRows(MusicLibrary& library, int selectedIndex, int topIndex) {
-    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+void Interface::refreshLikedRows(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
+    drawLikedRows(4, 17, library, user, selectedIndex, topIndex);
 }
 
-void Interface::refreshRecommendationsRows(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
-    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
+void Interface::refreshRecommendationsRows(MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    drawRecommendationRows(4, 17, library, user, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
 }
 
 void Interface::refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex) {
@@ -1026,7 +1200,7 @@ void Interface::refreshPlaylistSongsSelection(
 }
 
 void Interface::refreshPlaylistsSelection(
-    MusicLibrary& library,
+    User& currentUser,
     int previousSelectedIndex,
     int selectedIndex,
     int topIndex
@@ -1047,7 +1221,7 @@ void Interface::refreshPlaylistsSelection(
         int y = 17 + oldVisibleRow * 2;
 
         Playlist* playlist =
-            library.getPlaylist(previousSelectedIndex);
+            currentUser.getPlaylist(previousSelectedIndex);
 
         if (playlist != nullptr) {
 
@@ -1104,7 +1278,7 @@ void Interface::refreshPlaylistsSelection(
         int y = 17 + newVisibleRow * 2;
 
         Playlist* playlist =
-            library.getPlaylist(selectedIndex);
+            currentUser.getPlaylist(selectedIndex);
 
         if (playlist != nullptr) {
 
@@ -1161,8 +1335,8 @@ void Interface::refreshPlaylistsSelection(
     }
 }
 
-void Interface::refreshPlaylistRows(MusicLibrary& lib, int selectedIndex, int topIndex) {
-    drawPlaylistsRows(4, 17, lib, selectedIndex, topIndex);
+void Interface::refreshPlaylistRows(User& currentUser, int selectedIndex, int topIndex) {
+    drawPlaylistsRows(4, 17, currentUser, selectedIndex, topIndex);
 }
 void Interface::refreshPlaylistSongsRows(Playlist* playlist, int selectedIndex, int topIndex) {
     drawPlaylistSongsRows(4, 19, playlist, selectedIndex, topIndex);

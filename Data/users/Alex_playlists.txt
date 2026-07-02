@@ -1,0 +1,7 @@
+xd2
+..\\Canciones\\AM.wav
+[ENDPLAYLIST]
+xd
+..\\Canciones\\Alright.wav
+..\\Canciones\\AM.wav
+[ENDPLAYLIST]
