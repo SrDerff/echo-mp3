@@ -22,6 +22,7 @@
     <ClInclude Include="Album.h" />
     <ClInclude Include="AppController.h" />
     <ClInclude Include="Artist.h" />
+    <ClInclude Include="Auth.h" />
     <ClInclude Include="AVLTree.h" />
     <ClInclude Include="background.h" />
     <ClInclude Include="CircularDoublyLinkedList.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="HeapSort.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="EchoService.h" />
     <ClInclude Include="MergeSort.h" />
     <ClInclude Include="MusicLibrary.h" />
     <ClInclude Include="Node.h" />
@@ -43,6 +45,8 @@
     <ClInclude Include="Song.h" />
     <ClInclude Include="SortEngine.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="UserManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppController.cpp" />

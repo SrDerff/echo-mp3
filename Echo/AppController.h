@@ -27,6 +27,7 @@ private:
     Tab currentTab;
     int currentTabIndex;
     GestorAudio audio;
+	User currentUser;
 
     int librarySelectedIndex;
     int libraryTopIndex;

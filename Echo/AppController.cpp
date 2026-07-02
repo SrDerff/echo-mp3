@@ -1,4 +1,5 @@
 ﻿#include "AppController.h"
+#include "UserManager.h"
 
 namespace {
     constexpr int kVisibleLibraryRows = 17;
@@ -28,7 +29,7 @@ Song AppController::getLibrarySongAtVisibleIndex(int visibleIndex) {
 }
 
 Song AppController::getLikedSongAtVisibleIndex(int visibleIndex) {
-    vector<Song> likedSongs = musicLib.getLikedSongsVector();
+    vector<Song> likedSongs = currentUser.getLikedSongsVector(musicLib);
     if (visibleIndex < 0 || visibleIndex >= static_cast<int>(likedSongs.size())) {
         return Song();
     }
@@ -44,7 +45,7 @@ Song AppController::getRecommendationSongAtVisibleIndex(int visibleIndex) {
 }
 
 vector<RecommendationItem> AppController::getSortedRecommendations() {
-    vector<RecommendationItem> recommendations = musicLib.getRecommendedSongs();
+    vector<RecommendationItem> recommendations = currentUser.getRecommendedSongs(musicLib);
     if (recommendationsSortActive && !recommendations.empty()) {
         QuickSort::quickSort(recommendations, 0, (int)recommendations.size() - 1, recommendationsSortAscending);
     }
@@ -74,18 +75,16 @@ AppController::AppController()
     recommendationsSortActive(true),
     recommendationsSortAscending(false),
     showingWelcome(true),
-    welcomeSelectedIndex(0)
+    welcomeSelectedIndex(0),
+	currentUser(User("null", "null"))
 {
-    FileManager::generateDataset(5);
+	musicLib = MusicLibrary();
     FileManager::loadSongs(musicLib);
-    FileManager::loadPlaylists(musicLib);
     ui.displayWelcomeScreen(welcomeSelectedIndex);
-    musicLib.createDailyPlaylist();
 }
 
 AppController::~AppController() {
     FileManager::saveSongs(musicLib);
-    FileManager::savePlaylists(musicLib);
 }
 
 void AppController::moveDownWelcome() {
@@ -104,11 +103,58 @@ void AppController::moveUpWelcome() {
 
 void AppController::enterWelcomeOption() {
     if (welcomeSelectedIndex == 2) {
-        FileManager::savePlaylists(musicLib);
         exit(0);
     }
 
+    system("cls");
+
+    if (welcomeSelectedIndex == 0) {
+        string username = captureTextInput("Username: ");
+        string password = captureTextInput("Password: ");
+        if (!UserManager::loginUser(username, password, currentUser, musicLib)) {
+            ui.displayConsole();
+            ui.writeAt(4, 53, "Credenciales incorrectas.", 255, 120, 120);
+            showingWelcome = true;
+            ui.displayWelcomeScreen(welcomeSelectedIndex);
+            return;
+        }
+    }
+    else if (welcomeSelectedIndex == 1) {
+        string username = captureTextInput("Nuevo username: ");
+        string password = captureTextInput("Nueva password: ");
+        if (!UserManager::registerUser(username, password, false)) {
+            ui.displayConsole();
+            ui.writeAt(4, 53, "El usuario ya existe.", 255, 120, 120);
+            showingWelcome = true;
+            ui.displayWelcomeScreen(welcomeSelectedIndex);
+            return;
+        }
+        currentUser = User(username, password, false);
+    }
+
     showingWelcome = false;
+    librarySelectedIndex = 0;
+    libraryTopIndex = 0;
+    playlistsSelectedIndex = 0;
+    playlistsTopIndex = 0;
+    likedSelectedIndex = 0;
+    likedTopIndex = 0;
+    recommendationsSelectedIndex = 0;
+    recommendationsTopIndex = 0;
+    queueSelectedIndex = 0;
+    queueTopIndex = 0;
+    searchSelectedIndex = 0;
+    searchTopIndex = 0;
+    insidePlaylist = false;
+    openedPlaylistIndex = -1;
+    playlistSongsSelectedIndex = 0;
+    playlistSongsTopIndex = 0;
+    currentTabIndex = 1;
+    currentTab = Tab::LIBRARY;
+    durationSortActive = false;
+    durationSortAscending = true;
+    recommendationsSortActive = true;
+    recommendationsSortAscending = false;
     ui.displayMenu(musicLib, librarySelectedIndex, libraryTopIndex, false, durationSortActive, durationSortAscending);
 }
 
@@ -119,25 +165,25 @@ void AppController::renderRefresh() {
         break;
     case Tab::PLAYLISTS:
         if (insidePlaylist) {
-            Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+            Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
             ui.refreshPlaylistSongsRows(playlist, playlistSongsSelectedIndex, playlistSongsTopIndex);
         }
         else
         {
-            ui.refreshPlaylistRows(musicLib, playlistsSelectedIndex, playlistsTopIndex);
+            ui.refreshPlaylistRows(currentUser, playlistsSelectedIndex, playlistsTopIndex);
         }
         break;
     case Tab::LIKED:
-        ui.refreshLikedRows(musicLib, likedSelectedIndex, likedTopIndex);
+        ui.refreshLikedRows(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
         break;
     case Tab::RECOMMENDATIONS:
-        ui.refreshRecommendationsRows(musicLib, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+        ui.refreshRecommendationsRows(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
         break;
     case Tab::SEARCH:
         ui.refreshSearchRows(searchResults, searchSelectedIndex, searchTopIndex);
         break;
     case Tab::QUEUE:
-        ui.refreshQueueRows(*musicLib.getSessionHistory(), queueSelectedIndex, queueTopIndex);
+        ui.refreshQueueRows(*currentUser.getSessionHistory(), queueSelectedIndex, queueTopIndex);
         break;
     default:
         ui.refreshLibraryRows(musicLib, librarySelectedIndex, libraryTopIndex, durationSortActive, durationSortAscending);
@@ -152,22 +198,22 @@ void AppController::renderSwap() {
         break;
     case Tab::PLAYLISTS:
         if (insidePlaylist) {
-            Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+            Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
             ui.displayPlaylistSongs(playlist, playlistSongsSelectedIndex, playlistSongsTopIndex);
         }
         else
         {
-            ui.displayPlaylists(musicLib, playlistsSelectedIndex, playlistsTopIndex);
+            ui.displayPlaylists(currentUser, playlistsSelectedIndex, playlistsTopIndex);
         }
         break;
     case Tab::LIKED:
-        ui.displayLiked(musicLib, likedSelectedIndex, likedTopIndex);
+        ui.displayLiked(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
         break;
     case Tab::RECOMMENDATIONS:
-        ui.displayRecommendations(musicLib, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+        ui.displayRecommendations(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
         break;
     case Tab::QUEUE:
-        ui.displayQueue(musicLib, queueSelectedIndex, queueTopIndex);
+        ui.displayQueue(musicLib, currentUser, queueSelectedIndex, queueTopIndex);
         break;
     case Tab::SEARCH:
         ui.displaySearchWithResults(searchResults, searchSelectedIndex, searchTopIndex, searchQuery);
@@ -197,7 +243,7 @@ void AppController::moveDown() {
         }
     }
     else if (currentTab == Tab::PLAYLISTS && !insidePlaylist) {
-        const int totalPlaylists = musicLib.getPlaylistCount();
+        const int totalPlaylists = currentUser.getPlaylistCount();
         if (totalPlaylists == 0) return;
         if (playlistsSelectedIndex < totalPlaylists - 1) {
             playlistsSelectedIndex++;
@@ -209,7 +255,7 @@ void AppController::moveDown() {
     else if (currentTab == Tab::PLAYLISTS && insidePlaylist) {
 
         Playlist* playlist =
-            musicLib.getPlaylist(openedPlaylistIndex);
+            currentUser.getPlaylist(openedPlaylistIndex);
 
         if (playlist == nullptr) return;
 
@@ -230,7 +276,7 @@ void AppController::moveDown() {
         }
     }
     else if (currentTab == Tab::LIKED) {
-        const int totalSongs = static_cast<int>(musicLib.getLikedSongsVector().size());
+        const int totalSongs = static_cast<int>(currentUser.getLikedSongsVector(musicLib).size());
         if (totalSongs == 0) return;
 
         if (likedSelectedIndex < totalSongs - 1) {
@@ -241,7 +287,7 @@ void AppController::moveDown() {
         }
     }
     else if (currentTab == Tab::RECOMMENDATIONS) {
-        const int totalSongs = static_cast<int>(musicLib.getRecommendedSongs().size());
+        const int totalSongs = static_cast<int>(currentUser.getRecommendedSongs(musicLib).size());
         if (totalSongs == 0) return;
 
         if (recommendationsSelectedIndex < totalSongs - 1) {
@@ -400,12 +446,12 @@ void AppController::playSelectedSearchSong() {
     else {
         audio.reproducir();
     }
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
 }
 
 void AppController::moveDownQueue() {
-    Stack<Song>* history = musicLib.getSessionHistory();
+    Stack<Song>* history = currentUser.getSessionHistory();
     int totalSongs = static_cast<int>(history->size());
     if (totalSongs == 0) return;
     queueSelectedIndex++;
@@ -429,7 +475,7 @@ void AppController::moveUpQueue() {
 
 void AppController::playSelectedQueueSong() {
     if (currentTab != Tab::QUEUE) return;
-    Stack<Song>* history = musicLib.getSessionHistory();
+    Stack<Song>* history = currentUser.getSessionHistory();
     if (history->isEmpty()) return;
     if (queueSelectedIndex >= static_cast<int>(history->size())) return;
 
@@ -443,7 +489,7 @@ void AppController::playSelectedQueueSong() {
     else {
         audio.reproducir();
     }
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
 }
 
@@ -498,7 +544,6 @@ void AppController::handleInput() {
 
     if (showingWelcome) {
         if (key == 27) {
-            FileManager::savePlaylists(musicLib);
             exit(0);
         }
 
@@ -545,8 +590,36 @@ void AppController::handleInput() {
             return;
         }
 
-        FileManager::savePlaylists(musicLib);
-        exit(0);
+        FileManager::saveAccountConfigs(currentUser);
+
+        currentUser = User("null", "null");
+        showingWelcome = true;
+        welcomeSelectedIndex = 0;
+        librarySelectedIndex = 0;
+        libraryTopIndex = 0;
+        playlistsSelectedIndex = 0;
+        playlistsTopIndex = 0;
+        likedSelectedIndex = 0;
+        likedTopIndex = 0;
+        recommendationsSelectedIndex = 0;
+        recommendationsTopIndex = 0;
+        queueSelectedIndex = 0;
+        queueTopIndex = 0;
+        searchSelectedIndex = 0;
+        searchTopIndex = 0;
+        insidePlaylist = false;
+        openedPlaylistIndex = -1;
+        playlistSongsSelectedIndex = 0;
+        playlistSongsTopIndex = 0;
+        currentTabIndex = 1;
+        currentTab = Tab::LIBRARY;
+        durationSortActive = false;
+        durationSortAscending = true;
+        recommendationsSortActive = true;
+        recommendationsSortAscending = false;
+        system("cls");
+        ui.displayWelcomeScreen(welcomeSelectedIndex);
+        return;
     }
     if (key == 13) {
         switch (currentTab) {
@@ -560,7 +633,7 @@ void AppController::handleInput() {
                 playlistSongsSelectedIndex = 0;
                 playlistSongsTopIndex = 0;
 
-                Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+                Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
                 ui.displayPlaylistSongs(
                     playlist,
                     playlistSongsSelectedIndex,
@@ -652,15 +725,15 @@ void AppController::handleInput() {
 
     if (currentTab == Tab::PLAYLISTS && !insidePlaylist) {
         if (key == 'o' || key == 'O') {
-            musicLib.sortPlaylistsBySongCount(false);
-            FileManager::savePlaylists(musicLib);
+            currentUser.sortPlaylistsBySongCount(false);
+			FileManager::saveAccountConfigs(currentUser);
             render("swap");
             return;
         }
 
         if (key == 'p' || key == 'P') {
-            musicLib.sortPlaylistsBySongCount(true);
-            FileManager::savePlaylists(musicLib);
+            currentUser.sortPlaylistsBySongCount(true);
+            FileManager::saveAccountConfigs(currentUser);
             render("swap");
             return;
         }
@@ -743,7 +816,7 @@ void AppController::handleInput() {
             }
             else if (playlistsSelectedIndex != previousSelectedIndex) {
                 ui.refreshPlaylistsSelection(
-                    musicLib,
+                    currentUser,
                     previousSelectedIndex,
                     playlistsSelectedIndex,
                     playlistsTopIndex
@@ -756,7 +829,7 @@ void AppController::handleInput() {
 
             moveDown();
 
-            Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+            Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
 
             if (playlistSongsTopIndex != previousTopIndex) {
                 render("refresh");
@@ -780,7 +853,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (likedSelectedIndex != previousSelectedIndex) {
-                ui.refreshLikedRows(musicLib, likedSelectedIndex, likedTopIndex);
+                ui.refreshLikedRows(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
             }
         }
         else if (currentTab == Tab::RECOMMENDATIONS) {
@@ -793,7 +866,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (recommendationsSelectedIndex != previousSelectedIndex) {
-                ui.refreshRecommendationsRows(musicLib, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+                ui.refreshRecommendationsRows(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
             }
         }
         else if (currentTab == Tab::SEARCH) {
@@ -815,7 +888,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (queueSelectedIndex != previousSelectedIndex) {
-                ui.refreshQueueSelection(*musicLib.getSessionHistory(), previousSelectedIndex, queueSelectedIndex, queueTopIndex);
+                ui.refreshQueueSelection(*currentUser.getSessionHistory(), previousSelectedIndex, queueSelectedIndex, queueTopIndex);
             }
         }
         break;
@@ -853,7 +926,7 @@ void AppController::handleInput() {
             }
             else if (playlistsSelectedIndex != previousSelectedIndex) {
                 ui.refreshPlaylistsSelection(
-                    musicLib,
+                    currentUser,
                     previousSelectedIndex,
                     playlistsSelectedIndex,
                     playlistsTopIndex
@@ -866,7 +939,7 @@ void AppController::handleInput() {
 
             moveUp();
 
-            Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+            Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
 
             if (playlistSongsTopIndex != previousTopIndex) {
                 render("refresh");
@@ -890,7 +963,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (likedSelectedIndex != previousSelectedIndex) {
-                ui.refreshLikedRows(musicLib, likedSelectedIndex, likedTopIndex);
+                ui.refreshLikedRows(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
             }
         }
         else if (currentTab == Tab::RECOMMENDATIONS) {
@@ -903,7 +976,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (recommendationsSelectedIndex != previousSelectedIndex) {
-                ui.refreshRecommendationsRows(musicLib, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+                ui.refreshRecommendationsRows(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
             }
         }
         else if (currentTab == Tab::SEARCH) {
@@ -925,7 +998,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (queueSelectedIndex != previousSelectedIndex) {
-                ui.refreshQueueSelection(*musicLib.getSessionHistory(), previousSelectedIndex, queueSelectedIndex, queueTopIndex);
+                ui.refreshQueueSelection(*currentUser.getSessionHistory(), previousSelectedIndex, queueSelectedIndex, queueTopIndex);
             }
         }
         break;
@@ -951,7 +1024,7 @@ void AppController::playSelectedLikedSong() {
         audio.reproducir();
     }
 
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
 }
 
@@ -971,7 +1044,7 @@ void AppController::playSelectedRecommendationSong() {
         audio.reproducir();
     }
 
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
 }
 
@@ -985,7 +1058,7 @@ void AppController::toggleLikedSelectedSong() {
         break;
     case Tab::PLAYLISTS:
         if (insidePlaylist) {
-            Playlist* playlist = musicLib.getPlaylist(openedPlaylistIndex);
+            Playlist* playlist = currentUser.getPlaylist(openedPlaylistIndex);
             if (playlist == nullptr) return;
             selectedSong = playlist->getSongAt(playlistSongsSelectedIndex);
         }
@@ -1000,8 +1073,8 @@ void AppController::toggleLikedSelectedSong() {
         selectedSong = getRecommendationSongAtVisibleIndex(recommendationsSelectedIndex);
         break;
     case Tab::QUEUE:
-        if (!musicLib.getSessionHistory()->isEmpty()) {
-            selectedSong = musicLib.getSessionHistory()->getAt(queueSelectedIndex);
+        if (!currentUser.getSessionHistory()->isEmpty()) {
+            selectedSong = currentUser.getSessionHistory()->getAt(queueSelectedIndex);
         }
         else {
             hasSong = false;
@@ -1014,12 +1087,12 @@ void AppController::toggleLikedSelectedSong() {
 
     if (!hasSong || selectedSong.getSource().empty()) return;
 
-    bool wasLiked = selectedSong.isLiked();
+	bool wasLiked = currentUser.likesSong(selectedSong.getSource());
 
-    if (!musicLib.toggleLikedBySource(selectedSong.getSource())) return;
+    if (!currentUser.likeSong(selectedSong.getSource())) return;
 
     if (currentTab == Tab::LIKED) {
-        int totalSongs = static_cast<int>(musicLib.getLikedSongsVector().size());
+        int totalSongs = static_cast<int>(currentUser.getLikedSongsVector(musicLib).size());
         if (totalSongs == 0) {
             likedSelectedIndex = 0;
             likedTopIndex = 0;
@@ -1031,7 +1104,7 @@ void AppController::toggleLikedSelectedSong() {
     }
 
     if (currentTab == Tab::RECOMMENDATIONS) {
-        int totalSongs = static_cast<int>(musicLib.getRecommendedSongs().size());
+        int totalSongs = static_cast<int>(currentUser.getRecommendedSongs(musicLib).size());
         if (totalSongs == 0) {
             recommendationsSelectedIndex = 0;
             recommendationsTopIndex = 0;
@@ -1068,7 +1141,7 @@ void AppController::playSelectedSong() {
         audio.reproducir();
     }
 
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
 }
 
@@ -1077,7 +1150,7 @@ void AppController::playSelectedPlaylistSong() {
     if (!insidePlaylist) return;
 
     Playlist* playlist =
-        musicLib.getPlaylist(openedPlaylistIndex);
+        currentUser.getPlaylist(openedPlaylistIndex);
 
     if (playlist == nullptr) return;
 
@@ -1095,7 +1168,7 @@ void AppController::playSelectedPlaylistSong() {
     else {
         audio.reproducir();
     }
-    musicLib.addToSessionHistory(selectedSong);
+    currentUser.addToSessionHistory(selectedSong);
 }
 
 string AppController::captureTextInput(const string& prompt) {
@@ -1173,8 +1246,8 @@ void AppController::addSelectedSongToPlaylist() {
 
     Playlist* playlist = nullptr;
 
-    for (int i = 0; i < musicLib.getPlaylistCount(); i++) {
-        Playlist* p = musicLib.getPlaylist(i);
+    for (int i = 0; i < currentUser.getPlaylistCount(); i++) {
+        Playlist* p = currentUser.getPlaylist(i);
 
         if (p != nullptr && p->getName() == playlistName) {
             playlist = p;
@@ -1183,15 +1256,15 @@ void AppController::addSelectedSongToPlaylist() {
     }
 
     if (playlist == nullptr) {
-        musicLib.addPlaylist(playlistName);
-        playlist = musicLib.getPlaylist(musicLib.getPlaylistCount() - 1);
+        currentUser.addPlaylist(playlistName);
+        playlist = currentUser.getPlaylist(currentUser.getPlaylistCount() - 1);
     }
 
     if (playlist != nullptr) {
         playlist->addSong(song);
     }
 
-    FileManager::savePlaylists(musicLib);
+	FileManager::saveAccountConfigs(currentUser);
 
     ui.displayConsole();
     ui.writeAt(4, 53, "Cancion agregada correctamente.", 100, 255, 100);
@@ -1209,8 +1282,8 @@ void AppController::removeSelectedSongFromPlaylist() {
 
     Playlist* playlist = nullptr;
 
-    for (int i = 0; i < musicLib.getPlaylistCount(); i++) {
-        Playlist* p = musicLib.getPlaylist(i);
+    for (int i = 0; i < currentUser.getPlaylistCount(); i++) {
+        Playlist* p = currentUser.getPlaylist(i);
 
         if (p != nullptr && p->getName() == playlistName) {
             playlist = p;
@@ -1239,11 +1312,11 @@ void AppController::removeSelectedSongFromPlaylist() {
             playlist->removeSong(i);
 
             if (playlist->getSize() == 0) {
-                for (int j = 0; j < musicLib.getPlaylistCount(); j++) {
-                    Playlist* current = musicLib.getPlaylist(j);
+                for (int j = 0; j < currentUser.getPlaylistCount(); j++) {
+                    Playlist* current = currentUser.getPlaylist(j);
 
                     if (current == playlist) {
-                        musicLib.removePlaylist(j);
+                        currentUser.removePlaylist(j);
                         break;
                     }
                 }
@@ -1255,7 +1328,7 @@ void AppController::removeSelectedSongFromPlaylist() {
     }
 
     if (found) {
-        FileManager::savePlaylists(musicLib);
+		FileManager::saveAccountConfigs(currentUser);
 
         ui.displayConsole();
         ui.writeAt(4, 53, "Cancion eliminada correctamente.", 100, 255, 100);

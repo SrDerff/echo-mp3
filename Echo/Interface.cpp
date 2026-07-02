@@ -3,6 +3,7 @@
 #include "Background.h"
 #include <windows.h>
 #include "covers.h"
+#include "User.h"
 
 using namespace std;
 
@@ -311,8 +312,8 @@ void Interface::drawLibraryRows(int x, int y, MusicLibrary& library, int selecte
     }
 }
 
-void Interface::drawLikedRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
-    vector<Song> songs = library.getLikedSongsVector();
+void Interface::drawLikedRows(int x, int y, MusicLibrary& library, User& user, int selectedIndex, int topIndex) {
+    vector<Song> songs = user.getLikedSongsVector(library);
 
     int currentIndex = 0;
     int drawnRows = 0;
@@ -362,8 +363,8 @@ void Interface::drawLikedRows(int x, int y, MusicLibrary& library, int selectedI
     }
 }
 
-void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
-    vector<RecommendationItem> recommendations = library.getRecommendedSongs();
+void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    vector<RecommendationItem> recommendations = user.getRecommendedSongs(library);
 
     if (recommendationsSortActive && !recommendations.empty()) {
         QuickSort::quickSort(recommendations, 0, (int)recommendations.size() - 1, recommendationsSortAscending);
@@ -417,12 +418,12 @@ void Interface::drawRecommendationRows(int x, int y, MusicLibrary& library, int 
     }
 }
 
-void Interface::drawPlaylistsRows(int x, int y, MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::drawPlaylistsRows(int x, int y, User& currentUser, int selectedIndex, int topIndex) {
     int currentIndex = topIndex;
     int drawnRows = 0;
 
-    while (currentIndex < library.getPlaylistCount() && drawnRows < kLibraryVisibleRows) {
-        Playlist* playlist = library.getPlaylist(currentIndex);
+    while (currentIndex < currentUser.getPlaylistCount() && drawnRows < kLibraryVisibleRows) {
+        Playlist* playlist = currentUser.getPlaylist(currentIndex);
         if (playlist == nullptr) break;
 
         int yy = y + drawnRows * 2;
@@ -614,35 +615,35 @@ void Interface::displayLibrary(MusicLibrary& library, int selectedIndex, int top
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayLiked(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayLiked(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 3);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 3);
-    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+    drawLikedRows(4, 17, library, user, selectedIndex, topIndex);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayRecommendations(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+void Interface::displayRecommendations(MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 4);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 4);
-    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
+    drawRecommendationRows(4, 17, library, user, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
 
-void Interface::displayPlaylists(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayPlaylists(User& currentUser, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 2);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 2);
-    drawPlaylistsRows(4, 17, library, selectedIndex, topIndex);
+    drawPlaylistsRows(4, 17, currentUser, selectedIndex, topIndex);
 
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
 }
@@ -786,13 +787,13 @@ void Interface::drawPlaylistSongsRows(
     }
 }
 
-void Interface::displayQueue(MusicLibrary& library, int selectedIndex, int topIndex) {
+void Interface::displayQueue(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
     fillRect(4, 11, 20, 1, ' ', PANEL_R, PANEL_G, PANEL_B);
     fillRect(3, 13, 118, 38, ' ', PANEL_R, PANEL_G, PANEL_B);
     drawTabs(2, 8, 5);
     drawBox(2, 12, 196, 40, PANEL_R, PANEL_G, PANEL_B);
     drawTableHeader(4, 14, 5);
-    displayQueueSongs(*library.getSessionHistory(), selectedIndex, topIndex);
+    displayQueueSongs(*user.getSessionHistory(), selectedIndex, topIndex);
     vLine(121, 13, 38, '|', PANEL_R, PANEL_G, PANEL_B);
     drawRightPanelPlaceholder(131, 13, 58, 31);
 }
@@ -1015,12 +1016,12 @@ void Interface::refreshLibraryRows(MusicLibrary& library, int selectedIndex, int
     drawLibraryRows(4, 17, library, selectedIndex, topIndex, durationSortActive, durationSortAscending);
 }
 
-void Interface::refreshLikedRows(MusicLibrary& library, int selectedIndex, int topIndex) {
-    drawLikedRows(4, 17, library, selectedIndex, topIndex);
+void Interface::refreshLikedRows(MusicLibrary& library, User&user, int selectedIndex, int topIndex) {
+    drawLikedRows(4, 17, library, user, selectedIndex, topIndex);
 }
 
-void Interface::refreshRecommendationsRows(MusicLibrary& library, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
-    drawRecommendationRows(4, 17, library, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
+void Interface::refreshRecommendationsRows(MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
+    drawRecommendationRows(4, 17, library, user, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
 }
 
 void Interface::refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex) {
@@ -1199,7 +1200,7 @@ void Interface::refreshPlaylistSongsSelection(
 }
 
 void Interface::refreshPlaylistsSelection(
-    MusicLibrary& library,
+    User& currentUser,
     int previousSelectedIndex,
     int selectedIndex,
     int topIndex
@@ -1220,7 +1221,7 @@ void Interface::refreshPlaylistsSelection(
         int y = 17 + oldVisibleRow * 2;
 
         Playlist* playlist =
-            library.getPlaylist(previousSelectedIndex);
+            currentUser.getPlaylist(previousSelectedIndex);
 
         if (playlist != nullptr) {
 
@@ -1277,7 +1278,7 @@ void Interface::refreshPlaylistsSelection(
         int y = 17 + newVisibleRow * 2;
 
         Playlist* playlist =
-            library.getPlaylist(selectedIndex);
+            currentUser.getPlaylist(selectedIndex);
 
         if (playlist != nullptr) {
 
@@ -1334,8 +1335,8 @@ void Interface::refreshPlaylistsSelection(
     }
 }
 
-void Interface::refreshPlaylistRows(MusicLibrary& lib, int selectedIndex, int topIndex) {
-    drawPlaylistsRows(4, 17, lib, selectedIndex, topIndex);
+void Interface::refreshPlaylistRows(User& currentUser, int selectedIndex, int topIndex) {
+    drawPlaylistsRows(4, 17, currentUser, selectedIndex, topIndex);
 }
 void Interface::refreshPlaylistSongsRows(Playlist* playlist, int selectedIndex, int topIndex) {
     drawPlaylistSongsRows(4, 19, playlist, selectedIndex, topIndex);

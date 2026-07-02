@@ -5,8 +5,14 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
+#include "User.h"
 
 using namespace std;
+namespace appFiles {
+	const string SONGS_LIST_FILE = "..\\Data\\songsList.txt";
+	const string USERS_LIST_FILE = "..\\Data\\users\\users_list.txt";
+    const string USERS_FILE = "..\\Data\\users\\";
+}
 
 class FileManager {
 private:
@@ -27,7 +33,6 @@ private:
         }
         return Song();
     }
-
 public:
     /*
     Importancia:
@@ -94,7 +99,6 @@ public:
             getline(ss, durationStr, '|');
             getline(ss, genre, '|');
             getline(ss, playCountStr, '|');
-            getline(ss, likedStr, '|');
 
             char dummyImg[25][25];
             memset(dummyImg, ' ', sizeof(dummyImg));
@@ -102,9 +106,8 @@ public:
             try {
                 float duration = durationStr.empty() ? 0.0f : stof(durationStr);
                 int playCount = playCountStr.empty() ? 0 : stoi(playCountStr);
-                bool liked = (likedStr == "1" || likedStr == "true" || likedStr == "True");
 
-                Song song(name, author, source, duration, genre, dummyImg, playCount, liked);
+                Song song(name, author, source, duration, genre, dummyImg, playCount);
 
                 lib.addSongToLibrary(song);
 
@@ -132,8 +135,7 @@ public:
                 << s.getSource() << "|"
                 << s.getDuration() << "|"
                 << s.getGenre() << "|"
-                << s.getPlayCount() << "|"
-                << (s.isLiked() ? 1 : 0) << "\n";
+                << s.getPlayCount() << "\n";
             curr = curr->next;
         }
 
@@ -141,7 +143,7 @@ public:
         file.close();
         return true;
     }
-
+    /*
     static bool loadPlaylists(MusicLibrary& lib, const string& filename = "..\\Data\\playlists.txt") {
         ifstream file(filename);
         if (!file.is_open()) return false;
@@ -183,8 +185,136 @@ public:
 
         file.close();
         return true;
+    }*/
+
+    static void loadPlaylistsPerUser(MusicLibrary& lib, vector<Playlist>* playlist_storage, const string& username, const string& filepath) {
+        ifstream file(filepath);
+        if (!file.is_open()) return;
+
+        string line;
+        bool isPlaylistName = true;
+        vector<string>stored_names;
+
+        while (getline(file, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            line = trim(line);
+
+            if (line.empty()) continue;
+
+            if (isPlaylistName) {
+                bool repeated = false;
+                for (auto name : stored_names) {
+                    if (name == line) {
+                        repeated = true;
+                        break;
+                    }
+                }
+
+                if (repeated) {
+                    while (getline(file, line)) {
+                        if (!line.empty() && line.back() == '\r') line.pop_back();
+                        line = trim(line);
+
+                        if (line.empty()) continue;
+
+                        if (line == "[ENDPLAYLIST]") {
+                            isPlaylistName = true;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                stored_names.push_back(line);
+                playlist_storage->push_back(Playlist(line));
+                isPlaylistName = false;
+                continue;
+            }
+
+            if (line == "[ENDPLAYLIST]") {
+                isPlaylistName = true;
+                continue;
+            }
+
+            Song song = findSongBySource(lib, line);
+
+            //Song() representa una cancion vacia, misma que es devuelta solo si no se encuentra la cancion en la biblioteca
+            if (song != Song()) {
+                playlist_storage->back().addSong(song);
+            }
+        }
     }
 
+    static void loadLikesPerUser(HashTable<string, bool>& likes, MusicLibrary& lib, const string& filepath) {
+        ifstream file(filepath);
+        if (!file.is_open()) return;
+        vector<string>liked_songs;
+        string line;
+        while (getline(file, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            line = trim(line);
+        if (line.empty()) continue;
+
+        likes.insert(line, true);
+        }
+    }
+
+    static void loadHistoryPerUser(Stack<Song>* sessionHistory, MusicLibrary& lib, const string& filepath) {
+        ifstream file(filepath);
+        if (!file.is_open()) return;
+
+        string line;
+        while (getline(file, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            line = trim(line);
+            if (line.empty()) continue;
+
+            Song song = findSongBySource(lib, line);
+            if (song != Song()) {
+                sessionHistory->push(song);
+            }
+        }
+    }
+
+    static void savePlaylistsPerUser(vector<Playlist>* playlists, const string& filepath) {
+        ofstream file(filepath);
+        if (!file.is_open()) return;
+
+        for (auto pl : *playlists) {
+            file << pl.getName() << endl;
+            for (int i = 0; i < pl.getSize(); i++) {
+                Song n_song = pl.getSongAt(i);
+                file << n_song.getSource() << endl;
+            }
+            file << "[ENDPLAYLIST]" << endl;
+        }
+    }
+
+    static void saveLikesPerUser(const HashTable<string, bool>& likes, const string& filepath) {
+        ofstream file(filepath);
+        if (!file.is_open()) return;
+
+        vector<pair<string, bool>>likes_storage=likes.getAllItems();
+        for (int i = 0; i < likes.size(); i++) {
+            if (likes_storage[i].second) {
+                file << likes_storage[i].first<<endl;
+            }
+        }
+    }
+
+    static void saveHistoryPerUser(const Stack<Song>* history_storage, const string& filepath) {
+        ofstream file(filepath);
+        if (!file.is_open()) return;
+
+        Stack<Song> temp = *history_storage;
+        while (!temp.isEmpty()) {
+            Song song = temp.getAt(0);
+            temp.pop();
+            file << song.getSource() << endl;
+        }
+    }
+
+    /*
     static bool savePlaylists(const MusicLibrary& lib, const string& filename = "..\\Data\\playlists.txt") {
         ofstream file(filename);
         if (!file.is_open()) return false;
@@ -203,7 +333,7 @@ public:
 
         file.close();
         return true;
-    }
+    }*/
 
     /*
     Importancia:
@@ -374,14 +504,63 @@ public:
        la biblioteca puede quedar en un estado parcialmente cargado.
     */
     static bool loadLibrary(MusicLibrary& lib) {
-        bool songsOk = loadSongs(lib);
-        bool playlistsOk = loadPlaylists(lib);
-        return songsOk && playlistsOk;
+        return loadSongs(lib);
     }
 
     static bool saveLibrary(const MusicLibrary& lib) {
-        bool songsOk = saveSongs(lib);
-        bool playlistsOk = savePlaylists(lib);
-        return songsOk && playlistsOk;
+        return saveSongs(lib);
+    }
+
+    //accounts
+
+    static void loadAccountConfig(const string& username, User& user, MusicLibrary& musicLib) {
+        // Load user-specific data (playlists, liked songs, etc.) from files
+
+        //paths
+		string playlistsFilePath = "..\\Data\\users\\" + username + "_playlists.txt";
+		string likesFilePath = "..\\Data\\users\\" + username + "_likes.txt";
+		string historyFilePath = "..\\Data\\users\\" + username + "_history.txt";
+        
+        //loading
+		loadPlaylistsPerUser(musicLib, user.getPlaylists(), username, playlistsFilePath);
+        loadLikesPerUser(user.getLikedSongs(), musicLib, likesFilePath);
+        loadHistoryPerUser(user.getSessionHistory(), musicLib, historyFilePath);
+    }
+    
+    static void saveAccountConfigs(User& user) {
+        // Save user-specific data (playlists, liked songs, etc.) to files
+        string playlistsFilePath = "..\\Data\\users\\" + user.getUsername()  + "_playlists.txt";
+        string likesFilePath = "..\\Data\\users\\" + user.getUsername() + "_likes.txt";
+        string historyFilePath = "..\\Data\\users\\" + user.getUsername() + "_history.txt";
+
+        //saving
+		savePlaylistsPerUser(user.getPlaylists(), playlistsFilePath);
+		saveLikesPerUser(user.getLikedSongs(), likesFilePath);
+		saveHistoryPerUser(user.getSessionHistory(), historyFilePath);
+	}
+
+    static bool findAccount(const string& username) {
+        ifstream file(appFiles::USERS_LIST_FILE);
+        if (!file.is_open()) return false;
+
+        string line;
+        while (getline(file, line)) {
+            if (line.substr(0, line.find('|')) == username) {
+                file.close();
+                return true;
+            }
+        }
+
+        file.close();
+        return false;
+    }
+
+    static void addAccount(const string& username, const string& hashPassword, bool premium=false) {
+        ofstream file(appFiles::USERS_LIST_FILE, ios::app);
+        if (!file.is_open()) return;
+		file << username << "|" << hashPassword << "|" << (premium ? "1" : "0") << "\n";
+        ofstream playlists_file(appFiles::USERS_FILE + username + "_playlists.txt");
+        ofstream likes_file(appFiles::USERS_FILE + username + "_likes.txt");
+        ofstream history_file(appFiles::USERS_FILE + username + "_history.txt");
     }
 };
