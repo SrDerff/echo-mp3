@@ -243,7 +243,8 @@ public:
 		return curr ? &(curr->getValue()) : nullptr;
 	}
 
-    /**/
+    //Ahora la busqueda se realiza con hashtable, O(1)
+    //Ya va más rapido :,D
 
     void removeSongFromLibrary(const Song& song) {
         allSongs.removeNode(song);
@@ -482,6 +483,94 @@ public:
         auto items = indexByName.prefixSearch(prefix);
         for (auto& pair : items) result.push_back(pair.second);
         return result;
+    }
+
+  
+    Playlist generateThirtyMinMix(const string& mixName = "Daily Mix") {
+        const float TARGET = 1800.0f;      // 30 minutos
+        const float TOLERANCE = 60.0f;     // +/- 1 minuto
+        const float MIN_SONG = 120.0f;     // min 2 min por cancion
+        const float MAX_SONG = 360.0f;     // max 6 min por cancion
+
+        Playlist mix(mixName);
+        vector<string> usedSources;
+        float total = 0.0f;
+
+        srand(static_cast<unsigned>(time(nullptr)));
+
+        for (int attempt = 0; attempt < 50 && total < TARGET - TOLERANCE; attempt++) {
+            float remaining = TARGET - total;
+            float searchMin = MIN_SONG;
+            float searchMax = remaining + TOLERANCE;
+            if (searchMax > MAX_SONG) searchMax = MAX_SONG;
+
+            if (searchMin > searchMax) break;
+
+            // AVLTree::rangeSearch -> O(log N + M)
+            vector<Song> candidates = getSongsByDurationRange(searchMin, searchMax);
+
+            // Filtrar canciones ya usadas
+            vector<Song> available;
+            for (Song& s : candidates) {
+                bool used = false;
+                for (const string& src : usedSources) {
+                    if (s.getSource() == src) { used = true; break; }
+                }
+                if (!used) available.push_back(s);
+            }
+
+            if (available.empty()) break;
+
+            // Ordenar por cercania al tiempo restante (insertion sort simple)
+            // O(M^2) pero M es pequeno (< 20 tipicamente)
+            for (size_t i = 1; i < available.size(); i++) {
+                Song key = available[i];
+                float keyDiff = abs(key.getDuration() - remaining);
+                int j = static_cast<int>(i) - 1;
+                while (j >= 0 && abs(available[j].getDuration() - remaining) > keyDiff) {
+                    available[j + 1] = available[j];
+                    j--;
+                }
+                available[j + 1] = key;
+            }
+
+            // Elegir entre las 3 mejores con aleatoriedad
+            int pickRange = (available.size() < 3) ? static_cast<int>(available.size()) : 3;
+            int pick = rand() % pickRange;
+            Song chosen = available[pick];
+
+            mix.addSong(chosen);
+            usedSources.push_back(chosen.getSource());
+            total += chosen.getDuration();
+        }
+
+        return mix;
+    }
+
+    
+    Song getNextAlphabetical(const string& currentName) {
+        vector<Song> sorted = getSongsSortedByNameTree();
+
+        for (size_t i = 0; i < sorted.size(); i++) {
+            if (sorted[i].getName() == currentName) {
+                if (i + 1 < sorted.size()) return sorted[i + 1];
+                break; // Es la ultima
+            }
+        }
+        return Song();
+    }
+
+    
+    Song getPreviousAlphabetical(const string& currentName) {
+        vector<Song> sorted = getSongsSortedByNameTree();
+
+        for (size_t i = 0; i < sorted.size(); i++) {
+            if (sorted[i].getName() == currentName) {
+                if (i > 0) return sorted[i - 1];
+                break; // Es la primera
+            }
+        }
+        return Song();
     }
 
 private:
