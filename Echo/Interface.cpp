@@ -1,4 +1,4 @@
-﻿#include "Interface.h"
+#include "Interface.h"
 #include "RGB.h"
 #include "Background.h"
 #include <windows.h>
@@ -834,9 +834,13 @@ void Interface::displayHelp() {
     writeAt(160, 55, "[O/P]", ACCENT_R, 148, 255);
     writeAt(167, 55, ": Playlists", 220, 220, 220);
 
+    // [N / B] - Navegacion alfabetica (NUEVO)
+    writeAt(181, 55, "[N/B]", ACCENT_R, 148, 255);
+    writeAt(187, 55, ": Sig/Ant Alfab", 220, 220, 220);
+
     // [Esc]
-    writeAt(181, 55, "[Esc]", ACCENT_R, 148, 255);
-    writeAt(187, 55, ": Salir", 220, 220, 220);
+    writeAt(110, 57, "[Esc]", ACCENT_R, 148, 255);
+    writeAt(116, 57, ": Cerrar sesion", 220, 220, 220);
 }
 
 void Interface::displayWelcomeScreen(int selectedIndex) {
