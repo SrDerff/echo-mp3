@@ -1,4 +1,4 @@
-﻿#include "AppController.h"
+#include "AppController.h"
 #include "UserManager.h"
 
 namespace {
@@ -132,6 +132,25 @@ void AppController::enterWelcomeOption() {
         currentUser = User(username, password, false);
     }
 
+	Playlist dailyMix = musicLib.generateThirtyMinMix("Daily Mix"); //30 minutos de canciones
+    if (dailyMix.getSize() > 0) {
+        // Eliminar mix anterior si existe
+        for (int i = 0; i < currentUser.getPlaylistCount(); i++) {
+            Playlist* p = currentUser.getPlaylist(i);
+            if (p && p->getName() == "Daily Mix") {
+                currentUser.removePlaylist(i);
+                break;
+            }
+        }
+        currentUser.addPlaylist("Daily Mix");
+        Playlist* p = currentUser.getPlaylist(currentUser.getPlaylistCount() - 1);
+        if (p) {
+            for (uint i = 0; i < dailyMix.getSize(); i++) {
+                p->addSong(dailyMix.getSongAt(i));
+            }
+        }
+    }
+
     showingWelcome = false;
     librarySelectedIndex = 0;
     libraryTopIndex = 0;
@@ -156,6 +175,74 @@ void AppController::enterWelcomeOption() {
     recommendationsSortActive = true;
     recommendationsSortAscending = false;
     ui.displayMenu(musicLib, librarySelectedIndex, libraryTopIndex, false, durationSortActive, durationSortAscending);
+}
+
+void AppController::playNextAlphabetical() {
+    Song current;
+
+    // Obtener cancion actual segun la pestaña
+    switch (currentTab) {
+    case Tab::LIBRARY:
+        current = getLibrarySongAtVisibleIndex(librarySelectedIndex);
+        break;
+    case Tab::LIKED:
+        current = getLikedSongAtVisibleIndex(likedSelectedIndex);
+        break;
+    case Tab::SEARCH:
+        if (!searchResults.empty()) current = searchResults[searchSelectedIndex];
+        break;
+    default:
+        return;
+    }
+
+    if (current.getSource().empty()) return;
+
+    Song next = musicLib.getNextAlphabetical(current.getName());
+    if (next.getSource().empty()) return;
+
+    // Reproducir
+    if (audio.getActual() != next.getSource()) {
+        audio.cerrar();
+        if (audio.cargar(next.getSource())) audio.reproducir();
+    }
+    else {
+        audio.reproducir();
+    }
+    currentUser.addToSessionHistory(next);
+    ui.refreshHudSong(next.getName(), next.getAuthor());
+}
+
+void AppController::playPreviousAlphabetical() {
+    Song current;
+
+    switch (currentTab) {
+    case Tab::LIBRARY:
+        current = getLibrarySongAtVisibleIndex(librarySelectedIndex);
+        break;
+    case Tab::LIKED:
+        current = getLikedSongAtVisibleIndex(likedSelectedIndex);
+        break;
+    case Tab::SEARCH:
+        if (!searchResults.empty()) current = searchResults[searchSelectedIndex];
+        break;
+    default:
+        return;
+    }
+
+    if (current.getSource().empty()) return;
+
+    Song prev = musicLib.getPreviousAlphabetical(current.getName());
+    if (prev.getSource().empty()) return;
+
+    if (audio.getActual() != prev.getSource()) {
+        audio.cerrar();
+        if (audio.cargar(prev.getSource())) audio.reproducir();
+    }
+    else {
+        audio.reproducir();
+    }
+    currentUser.addToSessionHistory(prev);
+    ui.refreshHudSong(prev.getName(), prev.getAuthor());
 }
 
 void AppController::renderRefresh() {
@@ -569,6 +656,15 @@ void AppController::handleInput() {
             moveDownWelcome();
         }
 
+        return;
+    }
+
+    if (key == 'n' || key == 'N') {
+        playNextAlphabetical();
+        return;
+    }
+    if (key == 'b' || key == 'B') {
+        playPreviousAlphabetical();
         return;
     }
 
