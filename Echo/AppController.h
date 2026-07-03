@@ -96,6 +96,9 @@ private:
     void moveUpWelcome();
     void enterWelcomeOption();
 
+    void playNextAlphabetical();
+    void playPreviousAlphabetical();
+
 public:
     AppController();
     ~AppController();
