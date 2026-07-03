@@ -1,27 +1,39 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <utility>
-#include <functional>
 
 using namespace std;
 
-template<typename K, typename V>
+template<typename T, typename V>
 class HashTable {
 private:
     struct HashNode {
-        K key;
+        T key;
         V value;
         HashNode* next;
-        HashNode(const K& k, const V& v) : key(k), value(v), next(nullptr) {}
+        HashNode(const T& k, const V& v) : key(k), value(v), next(nullptr) {}
     };
 
     vector<HashNode*> buckets;
     size_t numBuckets;
     size_t numElements;
 
-    size_t hashFunc(const K& key) const {
-        return hash<K>{}(key) % numBuckets;
+    size_t djb2Hash(const string& str) const {
+        size_t hash = 5381;
+        for (char c : str) {
+            hash = ((hash << 5) + hash) + static_cast<unsigned char>(c); // hash * 33 + c
+        }
+        return hash;
+    }
+
+    template<typename H>
+    size_t djb2Hash(const H& value) const {
+        // Para punteros: usar direccion de memoria
+        return reinterpret_cast<size_t>(&value) * 2654435761u;
+    }
+
+    size_t getHash(const T& key) const {
+        return djb2Hash(key) % numBuckets;
     }
 
     void rehash() {
@@ -33,7 +45,7 @@ private:
             HashNode* curr = buckets[i];
             while (curr != nullptr) {
                 HashNode* next = curr->next;
-                size_t newIndex = hash<K>{}(curr->key) % numBuckets;
+                size_t newIndex = djb2Hash(curr->key) % numBuckets;
                 curr->next = newBuckets[newIndex];
                 newBuckets[newIndex] = curr;
                 curr = next;
@@ -52,12 +64,12 @@ public:
         clear();
     }
 
-    void insert(const K& key, const V& value) {
+    void insert(const T& key, const V& value) {
         if ((double)numElements / numBuckets > 0.75) {
             rehash();
         }
 
-        size_t index = hashFunc(key);
+        size_t index = getHash(key);
         HashNode* curr = buckets[index];
         while (curr != nullptr) {
             if (curr->key == key) {
@@ -73,8 +85,8 @@ public:
         numElements++;
     }
 
-    bool find(const K& key, V& value) const {
-        size_t index = hashFunc(key);
+    bool find(const T& key, V& value) const {
+        size_t index = getHash(key);
         HashNode* curr = buckets[index];
         while (curr != nullptr) {
             if (curr->key == key) {
@@ -86,8 +98,8 @@ public:
         return false;
     }
 
-    V* findPtr(const K& key) {
-        size_t index = hashFunc(key);
+    V* findPtr(const T& key) {
+        size_t index = getHash(key);
         HashNode* curr = buckets[index];
         while (curr != nullptr) {
             if (curr->key == key) {
@@ -98,8 +110,8 @@ public:
         return nullptr;
     }
 
-    const V* findPtr(const K& key) const {
-        size_t index = hashFunc(key);
+    const V* findPtr(const T& key) const {
+        size_t index = getHash(key);
         HashNode* curr = buckets[index];
         while (curr != nullptr) {
             if (curr->key == key) {
@@ -110,8 +122,8 @@ public:
         return nullptr;
     }
 
-    bool remove(const K& key) {
-        size_t index = hashFunc(key);
+    bool remove(const T& key) {
+        size_t index = getHash(key);
         HashNode* curr = buckets[index];
         HashNode* prev = nullptr;
 
@@ -133,7 +145,7 @@ public:
         return false;
     }
 
-    bool contains(const K& key) const {
+    bool contains(const T& key) const {
         V dummy;
         return find(key, dummy);
     }
@@ -154,8 +166,8 @@ public:
     size_t size() const { return numElements; }
     bool isEmpty() const { return numElements == 0; }
 
-    vector<pair<K, V>> getAllItems() const {
-        vector<pair<K, V>> items;
+    vector<pair<T, V>> getAllItems() const {
+        vector<pair<T, V>> items;
         for (size_t i = 0; i < numBuckets; ++i) {
             HashNode* curr = buckets[i];
             while (curr != nullptr) {
