@@ -1,1 +1,4 @@
 ..\\Canciones\\Apocalypse.wav
+..\\Canciones\\SickoMode.wav
+..\\Canciones\\Outside.wav
+..\\Canciones\\SickoMode.wav

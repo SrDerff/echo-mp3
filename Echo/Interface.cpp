@@ -194,30 +194,30 @@ void Interface::drawRightPanelPlaceholder(int x, int y, int w, int h) {
 
 void Interface::getAlbumArtColor(int code, int& r, int& g, int& b) {
     switch (code) {
-    case 1:  r = 232; g = 155; b = 53;  break;
-    case 2:  r = 220; g = 142; b = 42;  break;
-    case 3:  r = 227; g = 146; b = 43;  break;
-    case 4:  r = 202; g = 120; b = 20;  break;
-    case 5:  r = 201; g = 114; b = 20;  break;
-    case 6:  r = 183; g = 101; b = 9;   break;
-    case 7:  r = 166; g = 88;  b = 6;   break;
-    case 8:  r = 161; g = 86;  b = 19;  break;
-    case 9:  r = 89;  g = 26;  b = 10;  break;
-    case 10: r = 46;  g = 17;  b = 7;   break;
-    case 11: r = 38;  g = 19;  b = 7;   break;
-    case 12: r = 115; g = 74;  b = 25;  break;
-    case 13: r = 6;   g = 8;   b = 6;   break;
-    case 14: r = 23;  g = 11;  b = 6;   break;
-    case 15: r = 241; g = 175; b = 85;  break;
-    case 16: r = 144; g = 19;  b = 8;   break;
-    case 17: r = 39;  g = 8;   b = 6;   break;
-    case 18: r = 120; g = 8;   b = 7;   break;
-    case 19: r = 252; g = 207; b = 135; break;
-    case 20: r = 249; g = 195; b = 111; break;
-    case 21: r = 226; g = 122; b = 71;  break;
-    case 22: r = 225; g = 41;  b = 23;  break;
-    case 23: r = 135; g = 133; b = 77;  break;
-    case 24: r = 179; g = 119; b = 68;  break;
+    case 1:  r = 0;   g = 0;   b = 0;   break;
+    case 2:  r = 20;  g = 15;  b = 45;  break;
+    case 3:  r = 45;  g = 70;  b = 140; break;
+    case 4:  r = 18;  g = 38;  b = 72;  break;
+    case 5:  r = 110; g = 70;  b = 205; break;
+    case 6:  r = 185; g = 145; b = 255; break;
+    case 7:  r = 125; g = 195; b = 255; break;
+    case 8:  r = 28;  g = 105; b = 185; break;
+    case 9:  r = 3;   g = 6;   b = 14;  break;
+    case 10: r = 12;  g = 16;  b = 32;  break;
+    case 11: r = 170; g = 245; b = 255; break;
+    case 12: r = 0;   g = 10;  b = 22;  break;
+    case 13: r = 45;  g = 200; b = 235; break;
+    case 14: r = 0;   g = 55;  b = 95;  break;
+    case 15: r = 215; g = 175; b = 255; break;
+    case 16: r = 60;  g = 30;  b = 120; break;
+    case 17: r = 25;  g = 135; b = 175; break;
+    case 18: r = 18;  g = 20;  b = 45;  break;
+    case 19: r = 0;   g = 32;  b = 50;  break;
+    case 20: r = 45;  g = 28;  b = 90;  break;
+    case 21: r = 240; g = 210; b = 255; break;
+    case 22: r = 90;  g = 85;  b = 160; break;
+    case 23: r = 12;  g = 90;  b = 130; break;
+    case 24: r = 255; g = 255; b = 255; break;
     default: r = 0;   g = 0;   b = 0;   break;
     }
 }
