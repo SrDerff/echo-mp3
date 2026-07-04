@@ -40,7 +40,7 @@ public:
 
     void removeSong(int index) {
 
-        if (index < 0 || index >= songs.getSize())
+        if (index < 0 || index >= static_cast<int>(songs.getSize()))
             return;
 
         Song song = songs.getAt(index);

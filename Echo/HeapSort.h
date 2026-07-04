@@ -6,77 +6,77 @@ using namespace std;
 
 class HeapSort {
 private:
-    static void swapItems(Playlist& left, Playlist& right) {
-        Playlist temp = left;
+    template <typename T, typename Compare>
+    static void swapItems(T& left, T& right) {
+        T temp = left;
         left = right;
         right = temp;
     }
 
-    static bool hasHigherPriority(const Playlist& left, const Playlist& right) {
-        if (left.getSize() != right.getSize()) {
-            return left.getSize() > right.getSize();
-        }
-
-        return left.getName() < right.getName();
-    }
-
-    static int left(int index) {
-        return 2 * index + 1;
-    }
-
-    static int right(int index) {
-        return 2 * index + 2;
-    }
-
-    static void maxHeapify(vector<Playlist>& items, int count, int index) {
+    template <typename T, typename Compare>
+    static void heapify(vector<T>& items, int count, int index, Compare higherPriority) {
         int largest = index;
-        int leftChild = left(index);
-        int rightChild = right(index);
+        int leftChild = 2 * index + 1;
+        int rightChild = 2 * index + 2;
 
-        if (leftChild < count && hasHigherPriority(items[leftChild], items[largest])) {
+        if (leftChild < count && higherPriority(items[leftChild], items[largest])) {
             largest = leftChild;
         }
 
-        if (rightChild < count && hasHigherPriority(items[rightChild], items[largest])) {
+        if (rightChild < count && higherPriority(items[rightChild], items[largest])) {
             largest = rightChild;
         }
 
         if (largest != index) {
-            swapItems(items[index], items[largest]);
-            maxHeapify(items, count, largest);
+            swapItems<T, Compare>(items[index], items[largest]);
+            heapify(items, count, largest, higherPriority);
         }
     }
 
-    static void buildMaxHeap(vector<Playlist>& items) {
+    template <typename T, typename Compare>
+    static void buildHeap(vector<T>& items, Compare higherPriority) {
         for (int index = static_cast<int>(items.size()) / 2 - 1; index >= 0; --index) {
-            maxHeapify(items, static_cast<int>(items.size()), index);
+            heapify(items, static_cast<int>(items.size()), index, higherPriority);
         }
     }
 
-    static void reverseItems(vector<Playlist>& items) {
+    template <typename T, typename Compare>
+    static void reverseItems(vector<T>& items) {
         int leftIndex = 0;
         int rightIndex = static_cast<int>(items.size()) - 1;
 
         while (leftIndex < rightIndex) {
-            swapItems(items[leftIndex], items[rightIndex]);
+            swapItems<T, Compare>(items[leftIndex], items[rightIndex]);
             ++leftIndex;
             --rightIndex;
         }
     }
 
 public:
-    static void sortBySongCount(vector<Playlist>& items, bool ascending) {
+    template <typename T, typename Compare>
+    static void sort(vector<T>& items, Compare higherPriority, bool ascending) {
         if (items.size() < 2) return;
 
-        buildMaxHeap(items);
+        buildHeap(items, higherPriority);
 
         for (int index = static_cast<int>(items.size()) - 1; index > 0; --index) {
-            swapItems(items[0], items[index]);
-            maxHeapify(items, index, 0);
+            swapItems<T, Compare>(items[0], items[index]);
+            heapify(items, index, 0, higherPriority);
         }
 
         if (!ascending) {
-            reverseItems(items);
+            reverseItems<T, Compare>(items);
         }
+    }
+
+    static void sortBySongCount(vector<Playlist>& items, bool ascending) {
+        auto higherPriority = [](const Playlist& left, const Playlist& right) {
+            if (left.getSize() != right.getSize()) {
+                return left.getSize() > right.getSize();
+            }
+            return left.getName() < right.getName();
+            };
+
+        sort(items, higherPriority, ascending);
     }
 };
