@@ -103,10 +103,6 @@
     <ClInclude Include="EchoService.h">
       <Filter>Service</Filter>
     </ClInclude>
-<<<<<<< HEAD
-=======
-    <ClInclude Include="Graph.h" />
->>>>>>> 0c6f778 (AvanceNew)
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

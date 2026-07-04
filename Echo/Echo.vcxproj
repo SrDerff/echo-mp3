@@ -30,10 +30,6 @@
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GestorAudio.h" />
-<<<<<<< HEAD
-=======
-    <ClInclude Include="Graph.h" />
->>>>>>> 0c6f778 (AvanceNew)
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="HeapSort.h" />
     <ClInclude Include="Interface.h" />
