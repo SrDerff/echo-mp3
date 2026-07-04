@@ -565,7 +565,7 @@ void Interface::displayHud(MusicLibrary& library, int selectedIndex, int topInde
     string name = currentSong.getName();
     string artist = currentSong.getAuthor();
 
-    writeAt(4, 3, "|Playing|", 169, 177, 204);
+    writeAt(4, 3, "[Esc]: Salir", 169, 177, 204);
     //writeAt(4, 4, "2:46 / 5:21", SOFT_R, SOFT_G, SOFT_B);
 
     writeAt(87, 3, name, TITLE_R, TITLE_G, TITLE_B);
@@ -836,11 +836,7 @@ void Interface::displayHelp() {
 
     // [N / B] - Navegacion alfabetica (NUEVO)
     writeAt(181, 55, "[N/B]", ACCENT_R, 148, 255);
-    writeAt(187, 55, ": Sig/Ant Alfab", 220, 220, 220);
-
-    // [Esc]
-    writeAt(110, 57, "[Esc]", ACCENT_R, 148, 255);
-    writeAt(116, 57, ": Cerrar sesion", 220, 220, 220);
+    writeAt(187, 55, ": Sig/Ant", 220, 220, 220);
 }
 
 void Interface::displayWelcomeScreen(int selectedIndex) {

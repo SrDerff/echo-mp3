@@ -103,6 +103,9 @@
     <ClInclude Include="EchoService.h">
       <Filter>Service</Filter>
     </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
