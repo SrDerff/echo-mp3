@@ -1,5 +1,1 @@
 ..\\Canciones\\Apocalypse.wav
-..\\Canciones\\AsItWas.wav
-..\\Canciones\\Animals.wav
-..\\Canciones\\Boulevard.wav
-..\\Canciones\\ComeAsYouAre.wav

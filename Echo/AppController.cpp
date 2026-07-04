@@ -106,32 +106,49 @@ void AppController::enterWelcomeOption() {
         exit(0);
     }
 
-    system("cls");
-
     if (welcomeSelectedIndex == 0) {
-        string username = captureTextInput("Username: ");
-        string password = captureTextInput("Password: ");
+        ui.displayLoginInterface();
+        System::Console::CursorVisible = true;
+        string username, password;
+		System::Console::SetCursorPosition(80, 39);
+        cin >> username;
+		System::Console::SetCursorPosition(80, 43);
+        cin >> password;
+
         if (!UserManager::loginUser(username, password, currentUser, musicLib)) {
-            ui.displayConsole();
-            ui.writeAt(4, 53, "Credenciales incorrectas.", 255, 120, 120);
+            ui.writeAt(85, 46, "Usuario o password incorrectos.", 255, 120, 120);
+            System::Console::CursorVisible = false;
+            getch();
             showingWelcome = true;
-            ui.displayWelcomeScreen(welcomeSelectedIndex);
+            ui.backToWelcomeScreen(welcomeSelectedIndex);
             return;
-        }
+		}
+		ui.writeAt(75, 46, "Login exitoso. Presione cualquier tecla para continuar.", 120, 255, 120);
+        System::Console::CursorVisible = false;
+        getch();
     }
     else if (welcomeSelectedIndex == 1) {
-        string username = captureTextInput("Nuevo username: ");
-        string password = captureTextInput("Nueva password: ");
+        ui.displayRegisterInterface();
+        System::Console::CursorVisible = true;
+		string username, password;
+        System::Console::SetCursorPosition(80, 39);
+		cin >> username;
+        System::Console::SetCursorPosition(80, 43);
+        cin >> password;
         if (!UserManager::registerUser(username, password, false)) {
-            ui.displayConsole();
-            ui.writeAt(4, 53, "El usuario ya existe.", 255, 120, 120);
+            ui.writeAt(75, 46, "Usuario ya existe. Presione cualquier tecla para continuar.", 255, 120, 120);
+            System::Console::CursorVisible = false;
+            getch();
             showingWelcome = true;
-            ui.displayWelcomeScreen(welcomeSelectedIndex);
+            ui.backToWelcomeScreen(welcomeSelectedIndex);
             return;
-        }
-        currentUser = User(username, password, false);
+		}
+		currentUser = User(username, password, false);
+        ui.writeAt(75, 46, "Registro exitoso. Presione cualquier tecla para continuar.", 120, 255, 120);
+        System::Console::CursorVisible = false;
+        getch();
     }
-
+    
 	Playlist dailyMix = musicLib.generateThirtyMinMix("Daily Mix"); //30 minutos de canciones
     if (dailyMix.getSize() > 0) {
         // Eliminar mix anterior si existe
@@ -174,6 +191,7 @@ void AppController::enterWelcomeOption() {
     durationSortAscending = true;
     recommendationsSortActive = true;
     recommendationsSortAscending = false;
+    system("cls");
     ui.displayMenu(musicLib, librarySelectedIndex, libraryTopIndex, false, durationSortActive, durationSortAscending);
 }
 
@@ -690,6 +708,7 @@ void AppController::handleInput() {
 
         currentUser = User("null", "null");
         showingWelcome = true;
+        audio.cerrar();
         welcomeSelectedIndex = 0;
         librarySelectedIndex = 0;
         libraryTopIndex = 0;
@@ -1464,7 +1483,7 @@ void AppController::run() {
     while (true) {
         handleInput(); // Maneja la entrada del usuario en cada iteracion del loop principal.
         if (!showingWelcome) {
-            ui.drawSpectrum(130, 50, !audio.estaPausado()); // Dibuja el espectro en la parte inferior de la pantalla.
+            ui.drawSpectrum(130, 50, !audio.estaPausado() && audio.estaCargado()); // Dibuja el espectro en la parte inferior de la pantalla.
         }
     }
 }

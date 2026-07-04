@@ -282,7 +282,7 @@ public:
 
         for (auto pl : *playlists) {
             file << pl.getName() << endl;
-            for (int i = 0; i < pl.getSize(); i++) {
+            for (size_t i = 0; i < pl.getSize(); ++i) {
                 Song n_song = pl.getSongAt(i);
                 file << n_song.getSource() << endl;
             }
@@ -294,10 +294,10 @@ public:
         ofstream file(filepath);
         if (!file.is_open()) return;
 
-        vector<pair<string, bool>>likes_storage=likes.getAllItems();
-        for (int i = 0; i < likes.size(); i++) {
+        vector<pair<string, bool>> likes_storage = likes.getAllItems();
+        for (size_t i = 0; i < likes_storage.size(); ++i) {
             if (likes_storage[i].second) {
-                file << likes_storage[i].first<<endl;
+                file << likes_storage[i].first << endl;
             }
         }
     }

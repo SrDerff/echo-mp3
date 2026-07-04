@@ -565,7 +565,7 @@ void Interface::displayHud(MusicLibrary& library, int selectedIndex, int topInde
     string name = currentSong.getName();
     string artist = currentSong.getAuthor();
 
-    writeAt(4, 3, "|Playing|", 169, 177, 204);
+    writeAt(4, 3, "[Esc]: Salir", 169, 177, 204);
     //writeAt(4, 4, "2:46 / 5:21", SOFT_R, SOFT_G, SOFT_B);
 
     writeAt(87, 3, name, TITLE_R, TITLE_G, TITLE_B);
@@ -836,11 +836,190 @@ void Interface::displayHelp() {
 
     // [N / B] - Navegacion alfabetica (NUEVO)
     writeAt(181, 55, "[N/B]", ACCENT_R, 148, 255);
-    writeAt(187, 55, ": Sig/Ant Alfab", 220, 220, 220);
+    writeAt(187, 55, ": Sig/Ant", 220, 220, 220);
+}
 
-    // [Esc]
-    writeAt(110, 57, "[Esc]", ACCENT_R, 148, 255);
-    writeAt(116, 57, ": Cerrar sesion", 220, 220, 220);
+void Interface::displayLoginInterface() {
+    const int cyanR = 0;
+    const int cyanG = 220;
+    const int cyanB = 230;
+    const int purpleR = 210;
+    const int purpleG = 110;
+    const int purpleB = 255;
+    const int whiteR = 225;
+    const int whiteG = 226;
+    const int whiteB = 235;
+
+    auto line = [this](int x, int y, int len, int r, int g, int b) {
+        hLine(x, y, len, char(196), r, g, b);
+    };
+
+    auto framedBox = [this](int x, int y, int w, int h, int r, int g, int b) {
+        drawBox(x, y, w, h, r, g, b);
+    };
+
+    auto center = [this](int y, const string& text, int r, int g, int b) {
+        int x = 100 - static_cast<int>(text.size()) / 2;
+        writeAt(x, y, text, r, g, b);
+    };
+
+    // Limpia sin cambiar el fondo de la consola.
+	fillRect(50, 20, 100, 33, ' ', whiteR, whiteG, whiteB);
+
+    writeAt(76, 24, "--------", cyanR, cyanG, cyanB);
+    writeAt(86, 24, "*", cyanR, cyanG, cyanB);
+    center(24, "Iniciar Sesion", purpleR, purpleG, purpleB);
+    writeAt(112, 24, "*", cyanR, cyanG, cyanB);
+    writeAt(116, 24, "--------", cyanR, cyanG, cyanB);
+    center(27, "Ingresa tus credenciales para continuar.", whiteR, whiteG, whiteB);
+    line(64, 30, 34, 0, 140, 160);
+    writeAt(99, 30, "<>", cyanR, cyanG, cyanB);
+    line(103, 30, 34, 0, 140, 160);
+
+
+    framedBox(55, 34, 90, 16, cyanR, cyanG, cyanB);
+    framedBox(81, 33, 38, 3, cyanR, cyanG, cyanB);
+    fillRect(82, 34, 36, 1, ' ', cyanR, cyanG, cyanB);
+    writeAt(90, 34, "Ingresa tus datos", cyanR, cyanG, cyanB);
+
+	writeAt(62, 39, "Usuario: ", cyanR, cyanG, cyanB);
+	drawBox(78, 38, 60, 3, cyanR, cyanG, cyanB);
+
+	writeAt(62, 43, "Contrasena: ", cyanR, cyanG, cyanB);
+	drawBox(78, 42, 60, 3, cyanR, cyanG, cyanB);
+}
+
+void Interface::displayRegisterInterface() {
+    const int cyanR = 0;
+    const int cyanG = 220;
+    const int cyanB = 230;
+    const int purpleR = 210;
+    const int purpleG = 110;
+    const int purpleB = 255;
+    const int whiteR = 225;
+    const int whiteG = 226;
+    const int whiteB = 235;
+
+    auto line = [this](int x, int y, int len, int r, int g, int b) {
+        hLine(x, y, len, char(196), r, g, b);
+        };
+
+    auto framedBox = [this](int x, int y, int w, int h, int r, int g, int b) {
+        drawBox(x, y, w, h, r, g, b);
+        };
+
+    auto center = [this](int y, const string& text, int r, int g, int b) {
+        int x = 100 - static_cast<int>(text.size()) / 2;
+        writeAt(x, y, text, r, g, b);
+        };
+
+    // Limpia sin cambiar el fondo de la consola.
+    fillRect(50, 20, 100, 33, ' ', whiteR, whiteG, whiteB);
+
+    writeAt(76, 24, "--------", cyanR, cyanG, cyanB);
+    writeAt(86, 24, "*", cyanR, cyanG, cyanB);
+    center(24, "Registrarse", purpleR, purpleG, purpleB);
+    writeAt(112, 24, "*", cyanR, cyanG, cyanB);
+    writeAt(116, 24, "--------", cyanR, cyanG, cyanB);
+    center(27, "Ingresa tus credenciales para continuar.", whiteR, whiteG, whiteB);
+    line(64, 30, 34, 0, 140, 160);
+    writeAt(99, 30, "<>", cyanR, cyanG, cyanB);
+    line(103, 30, 34, 0, 140, 160);
+
+
+    framedBox(55, 34, 90, 16, cyanR, cyanG, cyanB);
+    framedBox(81, 33, 38, 3, cyanR, cyanG, cyanB);
+    fillRect(82, 34, 36, 1, ' ', cyanR, cyanG, cyanB);
+    writeAt(90, 34, "Ingresa tus datos", cyanR, cyanG, cyanB);
+
+    writeAt(62, 39, "Usuario: ", cyanR, cyanG, cyanB);
+    drawBox(78, 38, 60, 3, cyanR, cyanG, cyanB);
+
+    writeAt(62, 43, "Contrasena: ", cyanR, cyanG, cyanB);
+    drawBox(78, 42, 60, 3, cyanR, cyanG, cyanB);
+}
+
+void Interface::backToWelcomeScreen(int selectedIndex) {
+    auto line = [this](int x, int y, int len, int r, int g, int b) {
+        hLine(x, y, len, char(196), r, g, b);
+        };
+
+    auto framedBox = [this](int x, int y, int w, int h, int r, int g, int b) {
+        drawBox(x, y, w, h, r, g, b);
+        };
+
+    auto center = [this](int y, const string& text, int r, int g, int b) {
+        int x = 100 - static_cast<int>(text.size()) / 2;
+        writeAt(x, y, text, r, g, b);
+        };
+    const int cyanR = 0;
+    const int cyanG = 220;
+    const int cyanB = 230;
+    const int purpleR = 210;
+    const int purpleG = 110;
+    const int purpleB = 255;
+    const int yellowR = 255;
+    const int yellowG = 210;
+    const int yellowB = 90;
+    const int whiteR = 225;
+    const int whiteG = 226;
+    const int whiteB = 235;
+    const int dimR = 150;
+    const int dimG = 150;
+    const int dimB = 175;
+    const int darkR = 18;
+    const int darkG = 35;
+    const int darkB = 55;
+
+
+    // Limpia sin cambiar el fondo de la consola.
+    fillRect(50, 20, 100, 33, ' ', whiteR, whiteG, whiteB);
+
+    writeAt(76, 24, "--------", cyanR, cyanG, cyanB);
+    writeAt(86, 24, "*", cyanR, cyanG, cyanB);
+    center(24, "Bienvenido", purpleR, purpleG, purpleB);
+    writeAt(112, 24, "*", cyanR, cyanG, cyanB);
+    writeAt(116, 24, "--------", cyanR, cyanG, cyanB);
+    center(27, "Disfruta tu musica favorita desde la terminal.", whiteR, whiteG, whiteB);
+    line(64, 30, 34, 0, 140, 160);
+    writeAt(99, 30, "<>", cyanR, cyanG, cyanB);
+    line(103, 30, 34, 0, 140, 160);
+
+    const int optColorsInit[3][3] = {
+        {137, 172, 118},
+        {201, 193, 105},
+        {204, 113, 98}
+    };
+
+    const string options[] = {
+        "[1]  Iniciar sesion",
+        "[2]  Registrarse",
+        "[3]  Salir del programa"
+    };
+
+    for (int i = 0; i < 3; ++i) {
+        int y = 38 + i * 4;
+        bool selected = (selectedIndex == i);
+        int r = optColorsInit[i][0], g = optColorsInit[i][1], b = optColorsInit[i][2];
+        if (selected) {
+            fillRect(59, y - 1, 82, 3, ' ', 255, 255, 255, r, g, b);
+            writeAt(61, y, ">", 255, 255, 255, r, g, b);
+            writeAt(64, y, options[i], 255, 255, 255, r, g, b);
+            writeAt(137, y, ">>", 255, 255, 255, r, g, b);
+        }
+        else {
+            writeAt(64, y, options[i], 255, 255, 255);
+        }
+    }
+
+    center(52, "Usa flechas ARRIBA/ABAJO y presiona [Enter] para seleccionar", 200, 190, 230);
+    writeAt(5, 56, "Desarrollado en C++", dimR, dimG, dimB);
+    writeAt(145, 56, "Presiona [Esc] en cualquier momento para salir", dimR, dimG, dimB);
+
+    framedBox(55, 34, 90, 16, cyanR, cyanG, cyanB);
+    framedBox(81, 33, 38, 3, cyanR, cyanG, cyanB);
+    fillRect(82, 34, 36, 1, ' ', cyanR, cyanG, cyanB);
+    writeAt(90, 34, "Selecciona una opcion", cyanR, cyanG, cyanB);
 }
 
 void Interface::displayWelcomeScreen(int selectedIndex) {

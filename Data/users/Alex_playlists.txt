@@ -1,7 +1,8 @@
-xd2
-..\\Canciones\\AM.wav
-[ENDPLAYLIST]
-xd
-..\\Canciones\\Alright.wav
-..\\Canciones\\AM.wav
+Daily Mix
+..\\Canciones\\SickoMode.wav
+..\\Canciones\\LoseYourself.wav
+..\\Canciones\\OneMoreTime.wav
+..\\Canciones\\SpaceSong.wav
+..\\Canciones\\Californication.wav
+..\\Canciones\\Levels.wav
 [ENDPLAYLIST]

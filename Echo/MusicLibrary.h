@@ -10,9 +10,14 @@
 #include "HashTable.h"
 #include "RedBlackTree.h"
 #include "AVLTree.h"
-#include <vector>
 #include "MergeSort.h"
+#include "Graph.h"
+#include <vector>
 #include <cctype>
+#include <cmath>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 using uint = unsigned int;
@@ -24,14 +29,15 @@ private:
     vector<Artist> artists;
     vector<Album> albums;
 
-    // ===== INDICES PARA BUSQUEDA OPTIMIZADA =====
-    HashTable<string, Song*> indexBySource;           // O(1) por ruta de archivo
-    HashTable<string, vector<Song*>> indexByArtist;  // Agrupacion por artista
-    HashTable<string, vector<Song*>> indexByGenre;    // Agrupacion por genero
+    HashTable<string, Song*> indexBySource;
+    HashTable<string, vector<Song*>> indexByArtist;
+    HashTable<string, vector<Song*>> indexByGenre;
 
-    RedBlackTree<string, Song> indexByName;           // Orden alfabetico por nombre
-    AVLTree<float, Song> indexByDuration;             // Rango de duracion
-    AVLTree<int, Song> indexByPlayCount;             // Top canciones reproducidas
+    RedBlackTree<string, Song> indexByName;
+    AVLTree<float, Song> indexByDuration;
+    AVLTree<int, Song> indexByPlayCount;
+
+    Stack<Song> sessionHistory;
 
     static string normalizeTitleKey(const string& text) {
         string key;
@@ -44,13 +50,54 @@ private:
         return key;
     }
 
-public: bool isKnownGenre(const string& genre) {
-        return genre == "Rock" || genre == "Pop" || genre == "Hip Hop"
-            || genre == "Latin" || genre == "Electronic" || genre == "Ballad";
+    static int songSimilarity(const Song& a, const Song& b) {
+        int score = 0;
+        if (a.getAuthor() == b.getAuthor()) score += 40;
+        if (!a.getGenre().empty() && a.getGenre() == b.getGenre()) score += 30;
+        if (fabs(a.getDuration() - b.getDuration()) <= 20.0f) score += 10;
+        return score;
+    }
+
+    Graph<Song> buildRecommendationGraph(const vector<Song>& songs) const {
+        Graph<Song> graph;
+
+        for (const Song& song : songs) {
+            graph.addVertex(song);
+        }
+
+        for (int i = 0; i < graph.size(); ++i) {
+            for (int j = i + 1; j < graph.size(); ++j) {
+                int weight = songSimilarity(graph.vertexAt(i), graph.vertexAt(j));
+                if (weight > 0) {
+                    graph.addEdge(i, j, weight);
+                    graph.addEdge(j, i, weight);
+                }
+            }
+        }
+
+        return graph;
+    }
+
+    static string toLowerStr(string str) {
+        for (char& c : str) {
+            c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+        }
+        return str;
+    }
+
+public:
+    bool isKnownGenre(const string& genre) {
+        return genre == "Rock"
+            || genre == "Pop"
+            || genre == "Hip Hop"
+            || genre == "Latin"
+            || genre == "Electronic"
+            || genre == "Ballad";
     }
 
     static string normalizeGenre(const Song& song) {
         string title = normalizeTitleKey(song.getName());
+
         if (title == "alright") return "Hip Hop";
         if (title == "am") return "Latin";
         if (title == "animals") return "Electronic";
@@ -111,6 +158,7 @@ public: bool isKnownGenre(const string& genre) {
         if (title == "tusa") return "Latin";
         if (title == "uptownfunk") return "Pop";
         if (title == "wakemeup") return "Electronic";
+
         return "Other";
     }
 
@@ -124,53 +172,9 @@ public: bool isKnownGenre(const string& genre) {
         return ptrs;
     }
 
-public:
-    MusicLibrary(){
-        
+    MusicLibrary() {
     }
 
-    /*
-    Importancia:
-    Funcion nuclear que inserta una cancion en la lista principal y la indexa en
-    los 6 sistemas de busqueda optimizada (hash por fuente, hash por artista,
-    hash por genero, arbol rojo-negro por nombre, AVL por duracion, AVL por
-    reproducciones). Tambien actualiza las entidades de artista y album.
-    Es la unica puerta de entrada para incorporar canciones a la biblioteca.
-
-    BigO: O(N + A + B)
-    Donde N es la cantidad actual de canciones (insercion al final de la lista
-    enlazada: O(1) si hay puntero a la cola, pero puede ser O(N) si no), A es la
-    cantidad de artistas existentes (busqueda lineal para encontrar coincidencia) y
-    B es la cantidad de albumes existentes (busqueda lineal similar).
-    Las inserciones en los indices HashTable son O(1) promedio y O(N) en el peor
-    caso de colisiones. Las inserciones en RedBlackTree y AVLTree son O(log M)
-    donde M es la cantidad de elementos en cada arbol.
-    Espacio O(1) adicional, pues la cancion ya se almacena en la lista y los indices
-    solo guardan punteros o copias ligeras.
-
-    Explicacion detallada:
-    1. Toma una copia de la cancion (`normalizedSong`) para no modificar el original.
-    2. Normaliza el genero invocando `normalizeGenre()`, que asigna un genero
-       estandarizado (Rock, Pop, Hip Hop, Latin, Electronic, Ballad, Other) segun
-       una tabla fija de nombres de cancion conocidos. Esto garantiza consistencia
-       en los filtros por genero y en el sistema de recomendaciones.
-    3. Inserta la cancion al final de la lista doblemente enlazada `allSongs`.
-    4. Obtiene un puntero al nodo recien insertado para trabajar con la misma
-       instancia en memoria en todos los indices.
-    5. Indexa en los 6 sistemas de busqueda:
-       - `indexBySource`: HashTable clave=fuente(ruta archivo), valor=puntero a Song.
-       - `indexByArtist`: HashTable clave=nombre artista, valor=vector de punteros.
-       - `indexByGenre`: HashTable clave=genero normalizado, valor=vector de punteros.
-       - `indexByName`: RedBlackTree clave=nombre cancion, valor=copia de Song.
-       - `indexByDuration`: AVLTree clave=duracion (float), valor=copia de Song.
-       - `indexByPlayCount`: AVLTree clave=conteo reproducciones (int), valor=copia.
-    6. Busca si el artista ya existe en el vector `artists`. Si existe, agrega la
-       cancion a su lista; si no, crea un nuevo artista y lo agrega al vector.
-    7. Busca si existe un album con el mismo titulo (genero) y mismo artista.
-       Si existe, agrega la cancion como pista; si no, crea un nuevo album y lo
-       agrega al vector. Esto organiza las canciones en una estructura jerarquica
-       Artista > Album > Cancion.
-    */
     void addSongToLibrary(const Song& song) {
         Song normalizedSong = song;
         normalizedSong.setGenre(normalizeGenre(normalizedSong));
@@ -237,14 +241,11 @@ public:
 
     Song* findSongByName(const string& name) {
         Node<Song>* curr = allSongs.getHead();
-        while(curr!=nullptr && curr->getValue().getName() != name) {
+        while (curr != nullptr && curr->getValue().getName() != name) {
             curr = curr->next;
-		}
-		return curr ? &(curr->getValue()) : nullptr;
-	}
-
-    //Ahora la busqueda se realiza con hashtable, O(1)
-    //Ya va más rapido :,D
+        }
+        return curr ? &(curr->getValue()) : nullptr;
+    }
 
     void removeSongFromLibrary(const Song& song) {
         allSongs.removeNode(song);
@@ -256,7 +257,7 @@ public:
 
         vector<Song*>* artistVec = indexByArtist.findPtr(song.getAuthor());
         if (artistVec) {
-            auto it = remove_if(artistVec->begin(), artistVec->end(),
+            auto it = std::remove_if(artistVec->begin(), artistVec->end(),
                 [&](Song* s) { return s->getSource() == song.getSource(); });
             artistVec->erase(it, artistVec->end());
             if (artistVec->empty()) indexByArtist.remove(song.getAuthor());
@@ -264,19 +265,16 @@ public:
 
         vector<Song*>* genreVec = indexByGenre.findPtr(song.getGenre());
         if (genreVec) {
-            auto it = remove_if(genreVec->begin(), genreVec->end(),
+            auto it = std::remove_if(genreVec->begin(), genreVec->end(),
                 [&](Song* s) { return s->getSource() == song.getSource(); });
             genreVec->erase(it, genreVec->end());
             if (genreVec->empty()) indexByGenre.remove(song.getGenre());
         }
     }
 
-    DoublyLinkedList<Song>* getAllSongs() { return &allSongs; }
-
-    /*void addSongToPlaylist(int playlistIndex, const Song& song) {
-        Playlist* p = getPlaylist(playlistIndex);
-        if (p) p->addSong(song);
-    }*/
+    DoublyLinkedList<Song>* getAllSongs() {
+        return &allSongs;
+    }
 
     vector<Song*> getSongsSortedByName() {
         vector<Song*> all = getAllSongPtrs();
@@ -308,49 +306,50 @@ public:
         return songs;
     }
 
-    /**/
+    vector<RecommendationItem> getRecommendedSongs() {
+        vector<RecommendationItem> recommendations;
+        vector<Song> allSongsVector = getAllSongsVector();
 
-    /*
-    Importancia:
-    Implementa el algoritmo de recomendacion del reproductor. Analiza el historial
-    de reproduccion de la sesion actual y las canciones marcadas con "Me gusta"
-    para calcular un puntaje de relevancia para cada cancion no-likeada.
-    Es la base de la pestana "Recom." y permite al usuario descubrir musica
-    relacionada con sus gustos actuales.
+        if (allSongsVector.empty()) return recommendations;
 
-    BigO: O(T x (H + L))
-    Donde T es la cantidad total de canciones en la biblioteca (sin incluir liked),
-    H es el tamano del historial de sesion (Stack) y L es la cantidad de canciones
-    liked. Por cada cancion candidata se recorre todo el historial (H) y todas
-    las liked (L) para acumular puntajes.
-    Espacio O(T) para almacenar el vector de recomendaciones resultante, mas O(T)
-    temporal por las copias de `getAllSongsVector()` y `getLikedSongsVector()`.
+        Graph<Song> graph = buildRecommendationGraph(allSongsVector);
+        vector<int> scores(graph.size(), 0);
 
-    Explicacion detallada:
-    1. Obtiene dos vectores auxiliares: todas las canciones (`getAllSongsVector`)
-       y solo las canciones liked (`getLikedSongsVector`).
-    2. Si no hay canciones en la biblioteca, retorna un vector vacio.
-    3. Obtiene la cantidad de elementos en el historial de sesion (`sessionHistory`),
-       que es un Stack donde cada reproduccion agrega un elemento.
-    4. Itera sobre todas las canciones de la biblioteca. Omite las que ya estan
-       liked (no tiene sentido recomendar lo que ya le gusta al usuario).
-    5. Para cada cancion candidata calcula un puntaje inicializado en 0:
-       a) Recorre todo el historial de sesion y por cada cancion escuchada:
-          - Si coincide el artista, suma +10 puntos.
-          - Si ambos tienen generos conocidos y coinciden, suma +15 puntos.
-       b) Recorre todas las canciones liked y por cada una:
-          - Si ambos tienen generos conocidos y coinciden, suma +20 puntos.
-            (La coincidencia de genero con liked pesa mas que con historial)
-    6. Agrega la cancion y su puntaje como un `RecommendationItem` al vector.
-    7. Retorna el vector que luego puede ser ordenado por QuickSort segun el
-       puntaje para mostrar las mas relevantes primero.
-    */
+        auto boostFromSeed = [&](const Song& seed, int baseBoost) {
+            int seedIndex = graph.findVertexIndex([&](const Song& candidate) {
+                return candidate.getSource() == seed.getSource();
+                });
 
-    /**/
+            if (seedIndex < 0) return;
 
-    /**/
+            graph.forEachNeighbor(seedIndex, [&](int neighborIndex, int edgeWeight, const Song&) {
+                scores[neighborIndex] += baseBoost + edgeWeight;
+                });
+            };
 
-    /**/
+        uint historyCount = sessionHistory.size();
+        for (uint i = 0; i < historyCount; ++i) {
+            boostFromSeed(sessionHistory.getAt(i), 10);
+        }
+
+        for (int i = 0; i < graph.size(); ++i) {
+            const Song& song = graph.vertexAt(i);
+
+            bool alreadyInHistory = false;
+            for (uint j = 0; j < historyCount; ++j) {
+                if (sessionHistory.getAt(j).getSource() == song.getSource()) {
+                    alreadyInHistory = true;
+                    break;
+                }
+            }
+
+            if (!alreadyInHistory) {
+                recommendations.emplace_back(song, scores[i], "");
+            }
+        }
+
+        return recommendations;
+    }
 
     void clear() {
         allSongs.clear();
@@ -364,7 +363,6 @@ public:
         indexByDuration.clear();
         indexByPlayCount.clear();
     }
-
 
     vector<Song> getSongsByArtistFast(const string& artist) {
         vector<Song> result;
@@ -392,8 +390,7 @@ public:
     }
 
     Song* findSongByNameExact(const string& name) {
-        Song* found = indexByName.searchPtr(name);
-        return found;
+        return indexByName.searchPtr(name);
     }
 
     vector<Song> getSongsByDurationRange(float minSec, float maxSec) {
@@ -417,43 +414,6 @@ public:
         return result;
     }
 
-    /*
-    Importancia:
-    Implementa la busqueda por substring (coincidencia parcial) sobre el nombre y
-    el artista de cada cancion. Es el metodo de respaldo cuando la busqueda por
-    prefijo (que usa el arbol rojo-negro) no encuentra resultados. Permite al
-    usuario encontrar canciones incluso si no recuerda el nombre exacto o escribe
-    una parte del titulo o del artista.
-
-    BigO: O(N x (K + M))
-    Donde N es la cantidad de canciones en la biblioteca, K es la longitud del
-    query (despues de normalizar a minusculas), y M es la longitud promedio de
-    los campos name y author (tambien normalizados). Por cada cancion se aplica
-    `string::find()` que internamente tiene complejidad O(K x M) en el peor caso
-    (algoritmo de busqueda ingenua sin KMP). Adicionalmente, cada normalizacion
-    recorre el string completo O(len) para convertir a minusculas.
-    Espacio O(N) para el vector de resultados, mas O(K + M) temporal para las
-    conversiones a minusculas de query, name y author en cada iteracion.
-
-    Explicacion detallada:
-    1. Si el query esta vacio, retorna todas las canciones de la biblioteca
-       (equivalente a `getAllSongsVector()`).
-    2. Convierte el query completo a minusculas usando `toLowerStr()` para que
-       la busqueda sea case-insensitive (no distingua mayusculas/minusculas).
-    3. Recorre toda la lista doblemente enlazada `allSongs` con un puntero `curr`
-       desde la cabeza hasta el final (O(N)).
-    4. Para cada nodo:
-       a) Obtiene la referencia a la cancion (`curr->getValue()`).
-       b) Convierte `song.getName()` y `song.getAuthor()` a minusculas.
-       c) Verifica si el query normalizado es substring del nombre normalizado
-          usando `lowerName.find(lowerQuery)`. Si no coincide, verifica tambien
-          contra el autor con `lowerArtist.find(lowerQuery)`.
-       d) Si alguna de las dos verificaciones es positiva (devuelve != npos),
-          agrega la cancion al vector de resultados.
-    5. Retorna el vector con todas las canciones que coinciden parcialmente.
-       La interfaz se encarga de mostrar estos resultados ordenados segun el
-       orden de la lista original (por insercion).
-    */
     vector<Song> searchIncremental(const string& query) {
         vector<Song> results;
         if (query.empty()) {
@@ -485,12 +445,11 @@ public:
         return result;
     }
 
-  
     Playlist generateThirtyMinMix(const string& mixName = "Daily Mix") {
-        const float TARGET = 1800.0f;      // 30 minutos
-        const float TOLERANCE = 60.0f;     // +/- 1 minuto
-        const float MIN_SONG = 120.0f;     // min 2 min por cancion
-        const float MAX_SONG = 360.0f;     // max 6 min por cancion
+        const float TARGET = 1800.0f;
+        const float TOLERANCE = 60.0f;
+        const float MIN_SONG = 120.0f;
+        const float MAX_SONG = 360.0f;
 
         Playlist mix(mixName);
         vector<string> usedSources;
@@ -498,7 +457,7 @@ public:
 
         srand(static_cast<unsigned>(time(nullptr)));
 
-        for (int attempt = 0; attempt < 50 && total < TARGET - TOLERANCE; attempt++) {
+        for (int attempt = 0; attempt < 50 && total < TARGET - TOLERANCE; ++attempt) {
             float remaining = TARGET - total;
             float searchMin = MIN_SONG;
             float searchMax = remaining + TOLERANCE;
@@ -506,35 +465,33 @@ public:
 
             if (searchMin > searchMax) break;
 
-            // AVLTree::rangeSearch -> O(log N + M)
             vector<Song> candidates = getSongsByDurationRange(searchMin, searchMax);
 
-            // Filtrar canciones ya usadas
             vector<Song> available;
             for (Song& s : candidates) {
                 bool used = false;
                 for (const string& src : usedSources) {
-                    if (s.getSource() == src) { used = true; break; }
+                    if (s.getSource() == src) {
+                        used = true;
+                        break;
+                    }
                 }
                 if (!used) available.push_back(s);
             }
 
             if (available.empty()) break;
 
-            // Ordenar por cercania al tiempo restante (insertion sort simple)
-            // O(M^2) pero M es pequeno (< 20 tipicamente)
-            for (size_t i = 1; i < available.size(); i++) {
+            for (size_t i = 1; i < available.size(); ++i) {
                 Song key = available[i];
-                float keyDiff = abs(key.getDuration() - remaining);
+                float keyDiff = fabs(key.getDuration() - remaining);
                 int j = static_cast<int>(i) - 1;
-                while (j >= 0 && abs(available[j].getDuration() - remaining) > keyDiff) {
+                while (j >= 0 && fabs(available[j].getDuration() - remaining) > keyDiff) {
                     available[j + 1] = available[j];
-                    j--;
+                    --j;
                 }
                 available[j + 1] = key;
             }
 
-            // Elegir entre las 3 mejores con aleatoriedad
             int pickRange = (available.size() < 3) ? static_cast<int>(available.size()) : 3;
             int pick = rand() % pickRange;
             Song chosen = available[pick];
@@ -547,37 +504,39 @@ public:
         return mix;
     }
 
-    
     Song getNextAlphabetical(const string& currentName) {
         vector<Song> sorted = getSongsSortedByNameTree();
 
-        for (size_t i = 0; i < sorted.size(); i++) {
+        for (size_t i = 0; i < sorted.size(); ++i) {
             if (sorted[i].getName() == currentName) {
                 if (i + 1 < sorted.size()) return sorted[i + 1];
-                break; // Es la ultima
+                break;
             }
         }
         return Song();
     }
 
-    
     Song getPreviousAlphabetical(const string& currentName) {
         vector<Song> sorted = getSongsSortedByNameTree();
 
-        for (size_t i = 0; i < sorted.size(); i++) {
+        for (size_t i = 0; i < sorted.size(); ++i) {
             if (sorted[i].getName() == currentName) {
                 if (i > 0) return sorted[i - 1];
-                break; // Es la primera
+                break;
             }
         }
         return Song();
     }
 
-private:
-    static string toLowerStr(string str) {
-        for (char& c : str) {
-            c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+    void addToSessionHistory(const Song& song) {
+        if (!sessionHistory.isEmpty()) {
+            Song top = sessionHistory.top();
+            if (top.getSource() == song.getSource()) return;
         }
-        return str;
+        sessionHistory.push(song);
+    }
+
+    Stack<Song>* getSessionHistory() {
+        return &sessionHistory;
     }
 };
