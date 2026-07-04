@@ -1,4 +1,8 @@
 #pragma once
+<<<<<<< HEAD
+=======
+using uint = unsigned int;
+>>>>>>> 0c6f778 (AvanceNew)
 #include <stdexcept>
 
 template<typename T>
@@ -96,4 +100,8 @@ public:
         }
         return curr->data;
     }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 0c6f778 (AvanceNew)

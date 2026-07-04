@@ -11,6 +11,12 @@
 #include "RedBlackTree.h"
 #include "AVLTree.h"
 #include <vector>
+<<<<<<< HEAD
+=======
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+>>>>>>> 0c6f778 (AvanceNew)
 #include "MergeSort.h"
 #include <cctype>
 
@@ -581,3 +587,7 @@ private:
         return str;
     }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0c6f778 (AvanceNew)

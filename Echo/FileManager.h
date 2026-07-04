@@ -5,6 +5,10 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
+<<<<<<< HEAD
+=======
+#include <algorithm>
+>>>>>>> 0c6f778 (AvanceNew)
 #include "User.h"
 
 using namespace std;
@@ -564,3 +568,7 @@ public:
         ofstream history_file(appFiles::USERS_FILE + username + "_history.txt");
     }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0c6f778 (AvanceNew)

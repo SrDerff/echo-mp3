@@ -1,9 +1,24 @@
 #pragma once
 #include <string>
+<<<<<<< HEAD
+=======
+#include <vector>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+#include <iostream>
+>>>>>>> 0c6f778 (AvanceNew)
 #include "Playlist.h"
 #include "HashTable.h"
 #include "Stack.h"
 #include "Song.h"
+<<<<<<< HEAD
+=======
+#include "MusicLibrary.h"
+#include "Graph.h"
+#include "QuickSort.h"
+#include "HeapSort.h"
+>>>>>>> 0c6f778 (AvanceNew)
 using namespace std;
 
 class User
@@ -16,14 +31,20 @@ private:
 	Stack<Song> sessionHistory;
 	bool premium;
 public:
+<<<<<<< HEAD
 	///TODO
+=======
+>>>>>>> 0c6f778 (AvanceNew)
 	User(const string& username, const string& hashPassword, bool premium = false) {
 		this->username = username;
 		this->hashPassword = hashPassword;
 		this->premium = premium;
 		playlists.reserve(100);
 	}
+<<<<<<< HEAD
 	///TODO
+=======
+>>>>>>> 0c6f778 (AvanceNew)
 	~User() {
 	}
 	bool likesSong(const string& song_name) {
@@ -36,7 +57,10 @@ public:
 		return true;
 	}
 	bool unlikeSong(const string& song_name) {
+<<<<<<< HEAD
 		// Implementation for unliking a song
+=======
+>>>>>>> 0c6f778 (AvanceNew)
 		likedSongs.remove(song_name);
 		return true;
 	}
@@ -103,15 +127,23 @@ public:
 		return likedSongsVector;
 	}
 
+<<<<<<< HEAD
 	vector<RecommendationItem> getRecommendedSongs(MusicLibrary&lib) {
 		vector<RecommendationItem> recommendations;
 		vector<Song> allSongsVector = lib.getAllSongsVector();
 		vector<Song> likedSongs = getLikedSongsVector(lib);
+=======
+	vector<RecommendationItem> getRecommendedSongs(MusicLibrary& lib) {
+		vector<RecommendationItem> recommendations;
+		vector<Song> allSongsVector = lib.getAllSongsVector();
+		vector<Song> likedSongsVector = getLikedSongsVector(lib);
+>>>>>>> 0c6f778 (AvanceNew)
 
 		if (allSongsVector.empty()) {
 			return recommendations;
 		}
 
+<<<<<<< HEAD
 		uint historyCount = sessionHistory.size();
 
 		for (const Song& song : allSongsVector) {
@@ -136,6 +168,94 @@ public:
 			}
 
 			recommendations.emplace_back(song, score, "");
+=======
+		CGrafo<Song, int> graph;
+		for (const Song& song : allSongsVector) {
+			graph.adicionarVertice(song);
+		}
+
+		auto sameArtist = [](const Song& left, const Song& right) {
+			return left.getAuthor() == right.getAuthor();
+		};
+
+		auto sameKnownGenre = [&lib](const Song& left, const Song& right) {
+			return lib.isKnownGenre(left.getGenre())
+				&& lib.isKnownGenre(right.getGenre())
+				&& left.getGenre() == right.getGenre();
+		};
+
+		auto relationWeight = [&](const Song& left, const Song& right) {
+			int weight = 0;
+			if (sameArtist(left, right)) {
+				weight += 10;
+			}
+			if (sameKnownGenre(left, right)) {
+				weight += 15;
+			}
+			return weight;
+		};
+
+		for (int source = 0; source < graph.cantidadVertices(); ++source) {
+			for (int target = source + 1; target < graph.cantidadVertices(); ++target) {
+				int weight = relationWeight(graph.obtenerVertice(source), graph.obtenerVertice(target));
+				if (weight > 0) {
+					graph.adicionarArco(source, target, weight);
+					graph.adicionarArco(target, source, weight);
+				}
+			}
+		}
+
+		vector<int> scores(allSongsVector.size(), 0);
+
+		auto applySeed = [&](const Song& seed, bool fromLiked) {
+			int seedIndex = graph.buscarVerticeSi([&](const Song& current) {
+				return current.getSource() == seed.getSource();
+			});
+
+			if (seedIndex < 0) {
+				return;
+			}
+
+			graph.recorrerVertice(seedIndex, [&](int neighborIndex, int weight, const Song& neighbor) {
+				if (neighbor.getSource() == seed.getSource()) {
+					return;
+				}
+
+				if (fromLiked) {
+					if (sameKnownGenre(seed, neighbor)) {
+						scores[neighborIndex] += 20;
+					}
+				}
+				else {
+					if (sameArtist(seed, neighbor)) {
+						scores[neighborIndex] += 10;
+					}
+					if (sameKnownGenre(seed, neighbor)) {
+						scores[neighborIndex] += 15;
+					}
+				}
+			});
+		};
+
+		uint historyCount = sessionHistory.size();
+		for (uint index = 0; index < historyCount; ++index) {
+			applySeed(sessionHistory.getAt(index), false);
+		}
+
+		for (const Song& likedSong : likedSongsVector) {
+			applySeed(likedSong, true);
+		}
+
+		for (int index = 0; index < static_cast<int>(allSongsVector.size()); ++index) {
+			if (isSongLiked(allSongsVector[index].getSource())) {
+				continue;
+			}
+			recommendations.emplace_back(allSongsVector[index], scores[index], "Afinidad por grafo");
+		}
+
+		if (!recommendations.empty()) {
+			QuickSort::quickSort(recommendations, 0, static_cast<int>(recommendations.size()) - 1, true);
+>>>>>>> 0c6f778 (AvanceNew)
 		}
 
 		return recommendations;
@@ -180,3 +300,8 @@ public:
 	}
 };
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 0c6f778 (AvanceNew)

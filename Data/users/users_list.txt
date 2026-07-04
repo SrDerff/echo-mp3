@@ -1,2 +1,6 @@
 Alex|XD|0
 lol|XD|0
+<<<<<<< HEAD
+=======
+Marko|10|0
+>>>>>>> 0c6f778 (AvanceNew)

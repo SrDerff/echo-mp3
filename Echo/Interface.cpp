@@ -806,6 +806,7 @@ void Interface::displayConsole() {
     drawBox(2, 52, 196, 5, PANEL_R, PANEL_G, PANEL_B);
 }
 void Interface::displayHelp() {
+<<<<<<< HEAD
     // [Enter]
     writeAt(110, 53, "[Enter]", ACCENT_R, 148, 255);
     writeAt(117, 53, ": Reproducir / Entrar", 220, 220, 220);
@@ -841,6 +842,17 @@ void Interface::displayHelp() {
     // [Esc]
     writeAt(110, 57, "[Esc]", ACCENT_R, 148, 255);
     writeAt(116, 57, ": Cerrar sesion", 220, 220, 220);
+=======
+    writeAt(4, 53, "[Enter]: Reproducir / Entrar", ACCENT_R, 148, 255);
+    writeAt(44, 53, "[Espacio]: Pausar / Reanudar", ACCENT_R, 148, 255);
+    writeAt(86, 53, "[+]: Agregar a playlist", ACCENT_R, 148, 255);
+    writeAt(124, 53, "[L]: Like / Unlike", ACCENT_R, 148, 255);
+    writeAt(4, 55, "[A/S/D]: Ordenar duracion", ACCENT_R, 148, 255);
+    writeAt(44, 55, "[R/T]: Ordenar score", ACCENT_R, 148, 255);
+    writeAt(76, 55, "[O/P]: Ordenar playlists", ACCENT_R, 148, 255);
+    writeAt(116, 55, "[Search]: Escribe para buscar", ACCENT_R, 148, 255);
+    writeAt(4, 57, "[Esc]: Salir", ACCENT_R, 148, 255);
+>>>>>>> 0c6f778 (AvanceNew)
 }
 
 void Interface::displayWelcomeScreen(int selectedIndex) {
@@ -1552,3 +1564,7 @@ void Interface::refreshQueueSelection(Stack<Song>& history, int previousSelected
         writeAt(112, y, duration, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0c6f778 (AvanceNew)

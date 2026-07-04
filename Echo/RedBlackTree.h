@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include <string>
+<<<<<<< HEAD
+=======
+#include <algorithm>
+>>>>>>> 0c6f778 (AvanceNew)
 using namespace std;
 
 template<typename K, typename V>
@@ -273,3 +277,7 @@ public:
         return result;
     }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0c6f778 (AvanceNew)
