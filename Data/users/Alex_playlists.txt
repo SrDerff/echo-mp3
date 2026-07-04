@@ -1,8 +1,8 @@
 Daily Mix
-..\\Canciones\\SickoMode.wav
 ..\\Canciones\\LoseYourself.wav
+..\\Canciones\\SickoMode.wav
 ..\\Canciones\\OneMoreTime.wav
-..\\Canciones\\SpaceSong.wav
-..\\Canciones\\Californication.wav
-..\\Canciones\\Levels.wav
+..\\Canciones\\Stronger.wav
+..\\Canciones\\NoRoleModelz.wav
+..\\Canciones\\ScaredToBeLonely.wav
 [ENDPLAYLIST]
