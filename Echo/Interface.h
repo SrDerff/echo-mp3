@@ -67,6 +67,11 @@ public:
     void refreshLikedRows(MusicLibrary& library,User&user, int selectedIndex, int topIndex);
     void refreshRecommendationsRows(MusicLibrary& library, User& user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending);
 
+	//Login & Register screens
+    void displayRegisterInterface();
+	void displayLoginInterface();
+	void backToWelcomeScreen(int selectedIndex=1);
+
     //Para lo de queue
     void displayQueueSongs(Stack<Song>& library, int selectedIndex, int topIndex);
     void refreshQueueRows(Stack<Song>& library, int selectedIndex, int topIndex);

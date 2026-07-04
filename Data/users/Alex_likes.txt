@@ -1,4 +1,0 @@
-..\\Canciones\\Animals.wav
-..\\Canciones\\Alright.wav
-..\\Canciones\\AsItWas.wav
-..\\Canciones\\AM.wav
