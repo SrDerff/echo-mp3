@@ -62,10 +62,13 @@ public:
     void refreshWelcomeSelection(int previousSelectedIndex, int selectedIndex);
 
     void refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex);
+    void refreshLibrarySelectionSorted(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex, bool ascending);
     void refreshHud(MusicLibrary& library, int selectedIndex, int topIndex);
     void refreshLibraryRows(MusicLibrary& library, int selectedIndex, int topIndex, bool durationSortActive, bool durationSortAscending);
     void refreshLikedRows(MusicLibrary& library,User&user, int selectedIndex, int topIndex);
+    void refreshLikedSelection(MusicLibrary& library, User& user, int previousSelectedIndex, int selectedIndex, int topIndex);
     void refreshRecommendationsRows(MusicLibrary& library, User& user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending);
+    void refreshRecommendationsSelection(MusicLibrary& library, User& user, int previousSelectedIndex, int selectedIndex, int topIndex, bool sortActive, bool sortAscending);
 
 	//Login & Register screens
     void displayRegisterInterface();

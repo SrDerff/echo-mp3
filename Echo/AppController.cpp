@@ -906,7 +906,18 @@ void AppController::handleInput() {
             moveDown();
 
             if (durationSortActive) {
-                render("swap");
+                if (libraryTopIndex != previousTopIndex) {
+                    render("refresh");
+                }
+                else if (librarySelectedIndex != previousSelectedIndex) {
+                    ui.refreshLibrarySelectionSorted(
+                        musicLib,
+                        previousSelectedIndex,
+                        librarySelectedIndex,
+                        libraryTopIndex,
+                        durationSortAscending
+                    );
+                }
             }
             else if (libraryTopIndex != previousTopIndex) {
                 render("refresh");
@@ -968,7 +979,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (likedSelectedIndex != previousSelectedIndex) {
-                ui.refreshLikedRows(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
+                ui.refreshLikedSelection(musicLib, currentUser, previousSelectedIndex, likedSelectedIndex, likedTopIndex);
             }
         }
         else if (currentTab == Tab::RECOMMENDATIONS) {
@@ -981,7 +992,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (recommendationsSelectedIndex != previousSelectedIndex) {
-                ui.refreshRecommendationsRows(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+                ui.refreshRecommendationsSelection(musicLib, currentUser, previousSelectedIndex, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
             }
         }
         else if (currentTab == Tab::SEARCH) {
@@ -1016,7 +1027,18 @@ void AppController::handleInput() {
             moveUp();
 
             if (durationSortActive) {
-                render("swap");
+                if (libraryTopIndex != previousTopIndex) {
+                    render("refresh");
+                }
+                else if (librarySelectedIndex != previousSelectedIndex) {
+                    ui.refreshLibrarySelectionSorted(
+                        musicLib,
+                        previousSelectedIndex,
+                        librarySelectedIndex,
+                        libraryTopIndex,
+                        durationSortAscending
+                    );
+                }
             }
             else if (libraryTopIndex != previousTopIndex) {
                 render("refresh");
@@ -1078,7 +1100,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (likedSelectedIndex != previousSelectedIndex) {
-                ui.refreshLikedRows(musicLib, currentUser, likedSelectedIndex, likedTopIndex);
+                ui.refreshLikedSelection(musicLib, currentUser, previousSelectedIndex, likedSelectedIndex, likedTopIndex);
             }
         }
         else if (currentTab == Tab::RECOMMENDATIONS) {
@@ -1091,7 +1113,7 @@ void AppController::handleInput() {
                 render("refresh");
             }
             else if (recommendationsSelectedIndex != previousSelectedIndex) {
-                ui.refreshRecommendationsRows(musicLib, currentUser, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
+                ui.refreshRecommendationsSelection(musicLib, currentUser, previousSelectedIndex, recommendationsSelectedIndex, recommendationsTopIndex, recommendationsSortActive, recommendationsSortAscending);
             }
         }
         else if (currentTab == Tab::SEARCH) {
@@ -1204,7 +1226,11 @@ void AppController::toggleLikedSelectedSong() {
 
 	bool wasLiked = currentUser.likesSong(selectedSong.getSource());
 
-    if (!currentUser.likeSong(selectedSong.getSource())) return;
+    if (wasLiked) {
+        currentUser.unlikeSong(selectedSong.getSource());
+    } else {
+        if (!currentUser.likeSong(selectedSong.getSource())) return;
+    }
 
     if (currentTab == Tab::LIKED) {
         int totalSongs = static_cast<int>(currentUser.getLikedSongsVector(musicLib).size());

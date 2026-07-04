@@ -1,4 +1,16 @@
+..\\Canciones\\Normal.wav
+..\\Canciones\\Levels.wav
+..\\Canciones\\GodsPlan.wav
 ..\\Canciones\\Apocalypse.wav
 ..\\Canciones\\SickoMode.wav
 ..\\Canciones\\Outside.wav
 ..\\Canciones\\SickoMode.wav
+..\\Canciones\\Apocalypse.wav
+..\\Canciones\\BadGuy.wav
+..\\Canciones\\Alright.wav
+..\\Canciones\\SpaceSong.wav
+..\\Canciones\\Closer.wav
+..\\Canciones\\Boulevard.wav
+..\\Canciones\\Normal.wav
+..\\Canciones\\BadGuy.wav
+..\\Canciones\\AsItWas.wav

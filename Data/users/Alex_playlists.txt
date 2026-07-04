@@ -1,8 +1,13 @@
+New
+..\\Canciones\\GodsPlan.wav
+..\\Canciones\\Levels.wav
+..\\Canciones\\Normal.wav
+[ENDPLAYLIST]
 Daily Mix
-..\\Canciones\\LoseYourself.wav
 ..\\Canciones\\SickoMode.wav
+..\\Canciones\\Californication.wav
 ..\\Canciones\\OneMoreTime.wav
 ..\\Canciones\\Stronger.wav
 ..\\Canciones\\NoRoleModelz.wav
-..\\Canciones\\ScaredToBeLonely.wav
+..\\Canciones\\Levitating.wav
 [ENDPLAYLIST]

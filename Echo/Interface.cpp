@@ -1203,8 +1203,77 @@ void Interface::refreshLikedRows(MusicLibrary& library, User&user, int selectedI
     drawLikedRows(4, 17, library, user, selectedIndex, topIndex);
 }
 
+void Interface::refreshLikedSelection(MusicLibrary& library, User& user, int previousSelectedIndex, int selectedIndex, int topIndex) {
+    int oldVisibleRow = previousSelectedIndex - topIndex;
+    int newVisibleRow = selectedIndex - topIndex;
+
+    vector<Song> songs = user.getLikedSongsVector(library);
+
+    if (oldVisibleRow >= 0 && oldVisibleRow < kLibraryVisibleRows && previousSelectedIndex < (int)songs.size()) {
+        int y = 17 + oldVisibleRow * 2;
+        const Song& song = songs[previousSelectedIndex];
+        string artist = fitText(song.getAuthor(), 30);
+        string title = fitText(song.getName(), 45);
+        string duration = formatDuration(song.getDuration());
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, BG_R, BG_G, BG_B);
+        writeAt(4, y, artist, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(41, y, title, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(112, y, duration, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+    }
+
+    if (newVisibleRow >= 0 && newVisibleRow < kLibraryVisibleRows && newVisibleRow != oldVisibleRow && selectedIndex < (int)songs.size()) {
+        int y = 17 + newVisibleRow * 2;
+        const Song& song = songs[selectedIndex];
+        string artist = fitText(song.getAuthor(), 30);
+        string title = fitText(song.getName(), 45);
+        string duration = formatDuration(song.getDuration());
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(4, y, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(41, y, title, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(112, y, duration, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+    }
+}
+
 void Interface::refreshRecommendationsRows(MusicLibrary& library, User&user, int selectedIndex, int topIndex, bool recommendationsSortActive, bool recommendationsSortAscending) {
     drawRecommendationRows(4, 17, library, user, selectedIndex, topIndex, recommendationsSortActive, recommendationsSortAscending);
+}
+
+void Interface::refreshRecommendationsSelection(MusicLibrary& library, User& user, int previousSelectedIndex, int selectedIndex, int topIndex, bool sortActive, bool sortAscending) {
+    int oldVisibleRow = previousSelectedIndex - topIndex;
+    int newVisibleRow = selectedIndex - topIndex;
+
+    vector<RecommendationItem> recommendations = user.getRecommendedSongs(library);
+    if (sortActive && !recommendations.empty()) {
+        QuickSort::quickSort(recommendations, 0, (int)recommendations.size() - 1, sortAscending);
+    }
+
+    if (oldVisibleRow >= 0 && oldVisibleRow < kLibraryVisibleRows && previousSelectedIndex < (int)recommendations.size()) {
+        int y = 17 + oldVisibleRow * 2;
+        RecommendationItem& item = recommendations[previousSelectedIndex];
+        string artist = fitText(item.song.getAuthor(), 30);
+        string title = fitText(item.song.getName(), 45);
+        string score = to_string(item.score);
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, BG_R, BG_G, BG_B);
+        writeAt(4, y, artist, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(41, y, title, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(112, y, score, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+    }
+
+    if (newVisibleRow >= 0 && newVisibleRow < kLibraryVisibleRows && newVisibleRow != oldVisibleRow && selectedIndex < (int)recommendations.size()) {
+        int y = 17 + newVisibleRow * 2;
+        RecommendationItem& item = recommendations[selectedIndex];
+        string artist = fitText(item.song.getAuthor(), 30);
+        string title = fitText(item.song.getName(), 45);
+        string score = to_string(item.score);
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(4, y, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(41, y, title, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(112, y, score, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+    }
 }
 
 void Interface::refreshLibrarySelection(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex) {
@@ -1245,6 +1314,46 @@ void Interface::refreshLibrarySelection(MusicLibrary& library, int previousSelec
 
         curr = curr->next;
         index++;
+    }
+}
+
+void Interface::refreshLibrarySelectionSorted(MusicLibrary& library, int previousSelectedIndex, int selectedIndex, int topIndex, bool ascending) {
+    vector<Song> songs = library.getAllSongsVector();
+    if (ascending) {
+        MergeSort::sortByDurationAscending(songs);
+    } else {
+        MergeSort::sortByDurationDescending(songs);
+    }
+
+    int oldVisibleRow = previousSelectedIndex - topIndex;
+    int newVisibleRow = selectedIndex - topIndex;
+
+    if (oldVisibleRow >= 0 && oldVisibleRow < kLibraryVisibleRows) {
+        int y = 17 + oldVisibleRow * 2;
+        const Song& song = songs[previousSelectedIndex];
+
+        string artist = fitText(song.getAuthor(), 30);
+        string title = fitText(song.getName(), 45);
+        string duration = formatDuration(song.getDuration());
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, BG_R, BG_G, BG_B);
+        writeAt(4, y, artist, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(41, y, title, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+        writeAt(112, y, duration, SOFT_R, SOFT_G, SOFT_B, BG_R, BG_G, BG_B);
+    }
+
+    if (newVisibleRow >= 0 && newVisibleRow < kLibraryVisibleRows && newVisibleRow != oldVisibleRow) {
+        int y = 17 + newVisibleRow * 2;
+        const Song& song = songs[selectedIndex];
+
+        string artist = fitText(song.getAuthor(), 30);
+        string title = fitText(song.getName(), 45);
+        string duration = formatDuration(song.getDuration());
+
+        fillRect(3, y, 117, 1, ' ', 255, 255, 255, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(4, y, artist, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(41, y, title, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
+        writeAt(112, y, duration, TITLE_R, TITLE_G, TITLE_B, SELECT_BG_R, SELECT_BG_G, SELECT_BG_B);
     }
 }
 
