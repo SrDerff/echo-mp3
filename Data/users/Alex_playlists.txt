@@ -8,8 +8,8 @@ xd
 Daily Mix
 ..\\Canciones\\SickoMode.wav
 ..\\Canciones\\Californication.wav
+..\\Canciones\\LoseYourself.wav
 ..\\Canciones\\SpaceSong.wav
 ..\\Canciones\\OneMoreTime.wav
-..\\Canciones\\LoseYourself.wav
-..\\Canciones\\Levels.wav
+..\\Canciones\\GodsPlan.wav
 [ENDPLAYLIST]

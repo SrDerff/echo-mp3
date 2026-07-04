@@ -690,6 +690,7 @@ void AppController::handleInput() {
 
         currentUser = User("null", "null");
         showingWelcome = true;
+        audio.cerrar();
         welcomeSelectedIndex = 0;
         librarySelectedIndex = 0;
         libraryTopIndex = 0;
@@ -1464,7 +1465,7 @@ void AppController::run() {
     while (true) {
         handleInput(); // Maneja la entrada del usuario en cada iteracion del loop principal.
         if (!showingWelcome) {
-            ui.drawSpectrum(130, 50, !audio.estaPausado()); // Dibuja el espectro en la parte inferior de la pantalla.
+            ui.drawSpectrum(130, 50, !audio.estaPausado() && audio.estaCargado()); // Dibuja el espectro en la parte inferior de la pantalla.
         }
     }
 }
