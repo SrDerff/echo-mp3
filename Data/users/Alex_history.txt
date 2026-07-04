@@ -1,5 +1,11 @@
-..\\Canciones\\Apocalypse.wav
 ..\\Canciones\\AsItWas.wav
-..\\Canciones\\Animals.wav
-..\\Canciones\\Boulevard.wav
+..\\Canciones\\LaCancion.wav
+..\\Canciones\\GodsPlan.wav
+..\\Canciones\\EllaBailaSola.wav
+..\\Canciones\\CantStopFeeling.wav
+..\\Canciones\\BlindingLights.wav
 ..\\Canciones\\ComeAsYouAre.wav
+..\\Canciones\\Boulevard.wav
+..\\Canciones\\Animals.wav
+..\\Canciones\\AsItWas.wav
+..\\Canciones\\Apocalypse.wav

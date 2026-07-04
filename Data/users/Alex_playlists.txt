@@ -5,3 +5,11 @@ xd
 ..\\Canciones\\Alright.wav
 ..\\Canciones\\AM.wav
 [ENDPLAYLIST]
+Daily Mix
+..\\Canciones\\LoseYourself.wav
+..\\Canciones\\SickoMode.wav
+..\\Canciones\\OneMoreTime.wav
+..\\Canciones\\Stronger.wav
+..\\Canciones\\NoRoleModelz.wav
+..\\Canciones\\ChamberReflection.wav
+[ENDPLAYLIST]
