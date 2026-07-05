@@ -1,3 +1,4 @@
+..\\Canciones\\Apocalypse.wav
 ..\\Canciones\\Normal.wav
 ..\\Canciones\\Levels.wav
 ..\\Canciones\\GodsPlan.wav
@@ -14,3 +15,17 @@
 ..\\Canciones\\Normal.wav
 ..\\Canciones\\BadGuy.wav
 ..\\Canciones\\AsItWas.wav
+..\\Canciones\\NothingsGonnaHurt.wav
+..\\Canciones\\ShapeOfYou.wav
+..\\Canciones\\Animals.wav
+..\\Canciones\\KarmaPolice.wav
+..\\Canciones\\Animals.wav
+..\\Canciones\\BestFriend.wav
+..\\Canciones\\Boulevard.wav
+..\\Canciones\\CantStopFeeling.wav
+..\\Canciones\\Creep.wav
+..\\Canciones\\OneMoreTime.wav
+..\\Canciones\\NothingsGonnaHurt.wav
+..\\Canciones\\OneMoreTime.wav
+..\\Canciones\\PrettyGirl.wav
+..\\Canciones\\SevenNationArmy.wav

@@ -4,10 +4,10 @@ New
 ..\\Canciones\\Normal.wav
 [ENDPLAYLIST]
 Daily Mix
-..\\Canciones\\SickoMode.wav
+..\\Canciones\\LoseYourself.wav
 ..\\Canciones\\Californication.wav
 ..\\Canciones\\OneMoreTime.wav
-..\\Canciones\\Stronger.wav
-..\\Canciones\\NoRoleModelz.wav
-..\\Canciones\\Levitating.wav
+..\\Canciones\\SpaceSong.wav
+..\\Canciones\\SickoMode.wav
+..\\Canciones\\Levels.wav
 [ENDPLAYLIST]
