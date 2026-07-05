@@ -16,5 +16,5 @@
 ..\\Canciones\\PrettyGirl.wav
 ..\\Canciones\\Levitating.wav
 ..\\Canciones\\GodsPlan.wav
-..\\Canciones\\BadGuy.wav
 ..\\Canciones\\AsItWas.wav
+..\\Canciones\\BadGuy.wav

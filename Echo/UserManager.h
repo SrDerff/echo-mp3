@@ -16,6 +16,14 @@ public:
 		FileManager::addAccount(username, hashPassword, isPremium);
 		return true;
 	}
+
+	static User* loginFakeAccount(const string& username, const string& hashPassword, vector<User>& fakeAccounts) {
+		for (User& user : fakeAccounts) {
+			if (user.getUsername() == username && user.getHashPassword() == hashPassword)
+				return &user;
+		}
+		return nullptr;
+	}
 	static bool loginUser(const string& username, const string& hashPassword, User& outUser, MusicLibrary& musicLib) {
 		ifstream file(appFiles::USERS_LIST_FILE);
 		if (!file.is_open()) return false;

@@ -5,9 +5,9 @@ New
 [ENDPLAYLIST]
 Daily Mix
 ..\\Canciones\\LoseYourself.wav
-..\\Canciones\\Californication.wav
-..\\Canciones\\OneMoreTime.wav
-..\\Canciones\\SpaceSong.wav
 ..\\Canciones\\SickoMode.wav
-..\\Canciones\\Levels.wav
+..\\Canciones\\SpaceSong.wav
+..\\Canciones\\Californication.wav
+..\\Canciones\\Stronger.wav
+..\\Canciones\\Tusa.wav
 [ENDPLAYLIST]
