@@ -559,14 +559,12 @@ void AppController::moveDownQueue() {
     Stack<Song>* history = currentUser.getSessionHistory();
     int totalSongs = static_cast<int>(history->size());
     if (totalSongs == 0) return;
-    queueSelectedIndex++;
-    if (queueSelectedIndex >= queueTopIndex + kVisibleLibraryRows) {
-        queueTopIndex++;
+    if (queueSelectedIndex < totalSongs - 1) {
+        queueSelectedIndex++;
+        if (queueSelectedIndex >= queueTopIndex + kVisibleLibraryRows) {
+            queueTopIndex++;
+        }
     }
-    if (queueSelectedIndex >= totalSongs) {
-        queueSelectedIndex = 0;
-    }
-    
 }
 
 void AppController::moveUpQueue() {
