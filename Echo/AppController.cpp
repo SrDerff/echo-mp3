@@ -76,10 +76,12 @@ AppController::AppController()
     recommendationsSortAscending(false),
     showingWelcome(true),
     welcomeSelectedIndex(0),
-	currentUser(User("null", "null"))
+    currentUser(User("null", "null"))
 {
 	musicLib = MusicLibrary();
     FileManager::loadSongs(musicLib);
+    fakeAccounts = FileManager::generateFakeAccounts(musicLib);
+    loggedIntoFakeAccount = false;
     ui.displayWelcomeScreen(welcomeSelectedIndex);
 }
 
@@ -115,14 +117,25 @@ void AppController::enterWelcomeOption() {
 		System::Console::SetCursorPosition(80, 43);
         cin >> password;
 
-        if (!UserManager::loginUser(username, password, currentUser, musicLib)) {
-            ui.writeAt(85, 46, "Usuario o password incorrectos.", 255, 120, 120);
-            System::Console::CursorVisible = false;
-            getch();
-            showingWelcome = true;
-            ui.backToWelcomeScreen(welcomeSelectedIndex);
-            return;
-		}
+        if (UserManager::loginUser(username, password, currentUser, musicLib)) {
+            loggedIntoFakeAccount = false;
+        }
+        else {
+            // Intentar con cuentas demo
+            User* fakeUser = UserManager::loginFakeAccount(username, password, fakeAccounts);
+            if (fakeUser) {
+                currentUser = *fakeUser;
+                loggedIntoFakeAccount = true;
+            }
+            else {
+                ui.writeAt(85, 46, "Usuario o password incorrectos.", 255, 120, 120);
+                System::Console::CursorVisible = false;
+                getch();
+                showingWelcome = true;
+                ui.backToWelcomeScreen(welcomeSelectedIndex);
+                return;
+            }
+        }
 		ui.writeAt(75, 46, "Login exitoso. Presione cualquier tecla para continuar.", 120, 255, 120);
         System::Console::CursorVisible = false;
         getch();
@@ -144,6 +157,7 @@ void AppController::enterWelcomeOption() {
             return;
 		}
 		currentUser = User(username, password, false);
+        loggedIntoFakeAccount = false;
         ui.writeAt(75, 46, "Registro exitoso. Presione cualquier tecla para continuar.", 120, 255, 120);
         System::Console::CursorVisible = false;
         getch();
@@ -702,7 +716,7 @@ void AppController::handleInput() {
             return;
         }
 
-        FileManager::saveAccountConfigs(currentUser);
+        if (!loggedIntoFakeAccount) FileManager::saveAccountConfigs(currentUser);
 
         currentUser = User("null", "null");
         showingWelcome = true;
@@ -839,14 +853,14 @@ void AppController::handleInput() {
     if (currentTab == Tab::PLAYLISTS && !insidePlaylist) {
         if (key == 'o' || key == 'O') {
             currentUser.sortPlaylistsBySongCount(false);
-			FileManager::saveAccountConfigs(currentUser);
+			if (!loggedIntoFakeAccount) FileManager::saveAccountConfigs(currentUser);
             render("swap");
             return;
         }
 
         if (key == 'p' || key == 'P') {
             currentUser.sortPlaylistsBySongCount(true);
-            FileManager::saveAccountConfigs(currentUser);
+            if (!loggedIntoFakeAccount) FileManager::saveAccountConfigs(currentUser);
             render("swap");
             return;
         }
@@ -1181,6 +1195,7 @@ void AppController::playSelectedRecommendationSong() {
 
     currentUser.addToSessionHistory(selectedSong);
     ui.refreshHudSong(selectedSong.getName(), selectedSong.getAuthor());
+    render("refresh");
 }
 
 void AppController::toggleLikedSelectedSong() {
@@ -1403,7 +1418,7 @@ void AppController::addSelectedSongToPlaylist() {
         playlist->addSong(song);
     }
 
-	FileManager::saveAccountConfigs(currentUser);
+	if (!loggedIntoFakeAccount) FileManager::saveAccountConfigs(currentUser);
 
     ui.displayConsole();
     ui.writeAt(4, 53, "Cancion agregada correctamente.", 100, 255, 100);
@@ -1467,7 +1482,7 @@ void AppController::removeSelectedSongFromPlaylist() {
     }
 
     if (found) {
-		FileManager::saveAccountConfigs(currentUser);
+		if (!loggedIntoFakeAccount) FileManager::saveAccountConfigs(currentUser);
 
         ui.displayConsole();
         ui.writeAt(4, 53, "Cancion eliminada correctamente.", 100, 255, 100);

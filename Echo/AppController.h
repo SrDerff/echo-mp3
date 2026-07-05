@@ -58,6 +58,9 @@ private:
     bool showingWelcome;
     int welcomeSelectedIndex;
 
+    vector<User> fakeAccounts;
+    bool loggedIntoFakeAccount;
+
     // Estado de busqueda (copias seguras, no punteros)
     vector<Song> searchResults;
     string searchQuery;

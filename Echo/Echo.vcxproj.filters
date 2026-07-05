@@ -94,14 +94,8 @@
     <ClInclude Include="User.h">
       <Filter>Auth</Filter>
     </ClInclude>
-    <ClInclude Include="Auth.h">
-      <Filter>Auth</Filter>
-    </ClInclude>
     <ClInclude Include="UserManager.h">
       <Filter>Auth</Filter>
-    </ClInclude>
-    <ClInclude Include="EchoService.h">
-      <Filter>Service</Filter>
     </ClInclude>
     <ClInclude Include="Graph.h">
       <Filter>Model</Filter>

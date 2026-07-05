@@ -143,49 +143,6 @@ public:
         file.close();
         return true;
     }
-    /*
-    static bool loadPlaylists(MusicLibrary& lib, const string& filename = "..\\Data\\playlists.txt") {
-        ifstream file(filename);
-        if (!file.is_open()) return false;
-
-        string line;
-        int currentPlaylistIndex = -1;
-        vector<string>names;
-        while (getline(file, line)) {
-            if (!line.empty() && line.back() == '\r') line.pop_back();
-            line = trim(line);
-            if (line.empty()) continue;
-
-            if (line == "[ENDPLAYLIST]") {
-                currentPlaylistIndex = -1;
-                continue;
-            }
-
-            if (currentPlaylistIndex == -1) {
-                if (names.size() > 0) {
-                    for (auto x : names) {
-                        if (x == line || line == "Daily Mix") {
-                            file.close();
-                            return false;
-                        }
-                    }
-                }
-                lib.addPlaylist(line);
-                names.push_back(line);
-                currentPlaylistIndex = lib.getPlaylistCount() - 1;
-                continue;
-            }
-
-            Song song = findSongBySource(lib, line);
-
-            if (song != Song()) {
-                lib.addSongToPlaylist(currentPlaylistIndex, song);
-            }
-        }
-
-        file.close();
-        return true;
-    }*/
 
     static void loadPlaylistsPerUser(MusicLibrary& lib, vector<Playlist>* playlist_storage, const string& username, const string& filepath) {
         ifstream file(filepath);
@@ -315,168 +272,117 @@ public:
     }
 
     /*
-    static bool savePlaylists(const MusicLibrary& lib, const string& filename = "..\\Data\\playlists.txt") {
-        ofstream file(filename);
-        if (!file.is_open()) return false;
-
-        for (int i = 0; i < lib.getPlaylistCount(); i++) {
-            Playlist* p = const_cast<MusicLibrary&>(lib).getPlaylist(i);
-            if (p == nullptr) continue;
-            if (p->getName() == "Daily Mix") continue; // No guardamos la Daily Mix
-            file << p->getName() << "\n";
-            for (uint j = 0; j < p->getSize(); j++) {
-                Song s = p->getSongAt(j);
-                file << s.getSource() << "\n";
-            }
-            file << "[ENDPLAYLIST]\n";
-        }
-
-        file.close();
-        return true;
-    }*/
-
-    /*
     Importancia:
-    Generador de datasets de prueba que expande las canciones originales del archivo
-    "Data/songsList.txt" en un conjunto multiplo con metadatos variados (genero,
-    playcount, liked) y sufijos en el nombre. Es la unica herramienta para crear
-    datos de prueba masivos sin necesidad de archivos de audio adicionales, permitiendo
-    evaluar el rendimiento de los algoritmos de ordenamiento (MergeSort, QuickSort,
-    HeapSort) y de las estructuras de datos (HashTable, RedBlackTree, AVLTree) con
-    cargas de trabajo realistas. Sin esta funcion, las pruebas de rendimiento estarian
-    limitadas a las 60 canciones originales.
+    Generador de cuentas demo que crea 5 usuarios sinteticos (Demo1 a Demo5)
+    con datos predefinidos para pruebas y demostracion del sistema. Cada cuenta
+    incluye: una Daily Mix generada por el algoritmo de optimizacion de 30
+    minutos, entre 2 y 3 playlists tematicas con canciones aleatorias de la
+    biblioteca, una seleccion de canciones marcadas como "me gusta", y un
+    historial de reproduccion simulado. Estas cuentas existen unicamente en
+    memoria durante la ejecucion del programa y NO se persisten en disco,
+    a diferencia de las cuentas creadas manualmente por el usuario mediante
+    el formulario de registro. Esto permite al usuario explorar todas las
+    funcionalidades del reproductor sin necesidad de registrarse ni tener
+    datos reales.
 
-    BigO: O(B x M + T x G)
-    Donde B es la cantidad de canciones en el archivo backup (~60), M es el multiplicador
-    (default 5), y T es el total de lineas generadas (B x M). Por cada linea de
-    salida se ejecutan en O(1): seleccion aleatoria de genero, consulta de sufijo,
-    generacion de playCount y liked, y escritura formateada. El parseo de cada
-    linea plantilla es O(F) donde F son los 7 campos separados por '|'.
-    Espacio O(T + B) en memoria: O(B) para almacenar las lineas plantilla y O(1)
-    adicional para el buffer de escritura linea por linea. En disco se escriben
-    T lineas (el nuevo songsList.txt) y se preserva el backup original con B lineas.
+    BigO: O(N * (P + L + H))
+    Donde N es la cantidad de cuentas a generar (5 fijo), P es la cantidad
+    de playlists por cuenta (2-3), L es la cantidad de likes (3-10),
+    y H es la cantidad de entradas en el historial (3-7).
+    Por cada cuenta:
+    - `generateThirtyMinMix()` construye un grafo de canciones y ejecuta
+      un algoritmo de seleccion con insercion parcial O(C^2) donde C es
+      la cantidad de canciones candidatas en el rango de duracion.
+    - Las playlists se llenan iterando sobre indices aleatorios del vector
+      `allSongs` en O(S) donde S es la cantidad de canciones por playlist.
+    - Los likes y el historial tambien usan seleccion aleatoria O(1) por
+      operacion sobre el vector de canciones.
+    Espacio: O(N * (P * S + L + H)) para almacenar todas las cuentas en
+    memoria, mas O(C) temporal para la Daily Mix de cada cuenta.
 
     Explicacion detallada:
-    1. Verifica si el archivo de backup "songsList_backup.txt" existe en disco.
-       - Si NO existe: es la primera ejecucion del programa tras agregar el
-         generador. Abre el songsList.txt actual, copia cada linea intacta al
-         backup, y cierra ambos archivos. Esto preserva el dataset original.
-       - Si SI existe: salta la creacion del backup, pues ya fue respaldado
-         en una ejecucion anterior. El backup jamas se sobrescribe.
-    2. Abre el archivo de backup en modo lectura como plantilla base. Si no se
-       puede abrir (archivo faltante o sin permisos), retorna false.
-    3. Inicializa la semilla del generador aleatorio con `srand(time(nullptr))`
+    1. Inicializa el generador de numeros aleatorios con `srand(time(nullptr))`
        para que cada ejecucion produzca datos distintos.
-    4. Define un arreglo de estructuras `GenreSuffix` que mapea cada uno de los
-       16 generos a un sufijo textual (ej: "Hip-Hop" -> " - Remix", "Rock" ->
-       " - Rock Version"). Esto asegura que el nombre mostrado en pantalla
-       refleje el genero asignado.
-    5. Itera sobre cada linea del backup usando `getline()`:
-       a) Elimina el caracter de retorno de carro '\r' al final si existe.
-       b) Aplica `trim()` para eliminar espacios en blanco al inicio y final.
-       c) Ignora lineas vacias.
-       d) Agrega la linea limpia al vector `templateLines`.
-    6. Cierra el archivo de backup y abre (o sobrescribe) el archivo de salida
-       "Data/songsList.txt" en modo escritura.
-    7. Para cada linea plantilla en `templateLines`:
-       a) Usa un `stringstream` para extraer los 7 campos separados por '|':
-          name, author, source, durationStr, genre, playCountStr, likedStr.
-       b) Repite `multiplier` veces (default 5):
-          i)  Selecciona un indice aleatorio entre 0 y 15 (16 generos).
-          ii) Obtiene el genero y el sufijo correspondiente desde `genreMap`.
-          iii) Genera playCount aleatorio entre 0 y 500 (`rand() % 501`).
-          iv) Genera liked aleatorio (0 o 1) mediante `rand() % 2`.
-          v)  Escribe la linea de salida en el formato:
-              `nombre + sufijo | autor | source | duracion | genero | playCount | liked`
-    8. Cierra el archivo de salida y retorna true indicando exito.
+    2. Define un arreglo fijo de 5 nombres de usuario: "Demo1" a "Demo5",
+       todos con contrasena "demo". Crea un vector `accounts` vacio.
+    3. Para cada iteracion del ciclo (5 veces):
+       a) Crea un nuevo User directamente en el vector mediante
+          `emplace_back(nombre, "demo", false)`. Se obtiene una referencia
+          `User& user` al elemento recien creado para trabajar directamente
+          sobre el objeto dentro del vector, evitando copias temporales.
+       b) Obtiene todas las canciones de la biblioteca como un vector
+          (`allSongs`) mediante `getAllSongsVector()`.
+       c) Genera una Daily Mix llamando a `lib.generateThirtyMinMix()`,
+          que selecciona canciones hasta completar ~30 minutos. Si la mix
+          tiene canciones, se agrega como playlist "Daily Mix" y se copian
+          todas las canciones desde el objeto Playlist retornado.
+       d) Crea entre 2 y 3 playlists adicionales (aleatorio) con nombres
+          "Playlist 1", "Playlist 2", etc. Cada playlist se llena con
+          entre 3 y 8 canciones seleccionadas aleatoriamente del vector
+          `allSongs`, usando indices aleatorios con `rand() % allSongs.size()`.
+       e) Marca entre 3 y 10 canciones como "me gusta" seleccionando
+          indices aleatorios y llamando a `user.likeSong(source)`.
+       f) Agrega entre 3 y 7 canciones al historial de sesion mediante
+          `user.addToSessionHistory(cancion)`, tambien con seleccion
+          aleatoria, simulando reproducciones recientes.
+    4. Retorna el vector `accounts` con las 5 cuentas demo completamente
+       configuradas. El AppController las almacena en `fakeAccounts` y
+       las ofrece como opcion de inicio de sesion junto a las cuentas reales.
     */
-    static bool generateDataset(int multiplier = 5, const string& outputFilename = "..\\Data\\songsList.txt", const string& backupFilename = "..\\Data\\songsList_backup.txt") {
-        // Primera ejecucion: crear backup desde el songsList.txt original
-        {
-            ifstream checkBackup(backupFilename);
-            bool backupExists = checkBackup.is_open();
-            checkBackup.close();
-
-            if (!backupExists) {
-                ifstream original(outputFilename);
-                if (!original.is_open()) return false;
-                ofstream backup(backupFilename);
-                string line;
-                while (getline(original, line)) {
-                    backup << line << "\n";
-                }
-                original.close();
-                backup.close();
-            }
-        }
-
-        // Leer siempre desde el backup (original limpio)
-        ifstream input(backupFilename);
-        if (!input.is_open()) return false;
-
+    static vector<User> generateFakeAccounts(MusicLibrary& lib) {
+        vector<User> accounts;
         srand(static_cast<unsigned>(time(nullptr)));
 
-        struct GenreSuffix {
-            const char* genre;
-            const char* suffix;
-        };
-        GenreSuffix genreMap[] = {
-            {"Hip-Hop", " - Remix"},
-            {"Electronic", " - Remix"},
-            {"Reggaeton", " - Remix"},
-            {"Rock", " - Rock Version"},
-            {"Metal", " - Rock Version"},
-            {"Pop", " - Pop Version"},
-            {"K-Pop", " - Pop Version"},
-            {"Alternative", " - Alt Version"},
-            {"Indie", " - Alt Version"},
-            {"R&B", " - RnB Mix"},
-            {"Soul", " - RnB Mix"},
-            {"Funk", " - RnB Mix"},
-            {"Blues", " - RnB Mix"},
-            {"Jazz", " - Jazz Version"},
-            {"Country", " - Country Mix"},
-            {"Latin", " - Latin Version"}
-        };
-        const int genreCount = sizeof(genreMap) / sizeof(genreMap[0]);
+        string names[] = { "Demo1", "Demo2", "Demo3", "Demo4", "Demo5" };
+        string password = "demo";
 
-        vector<string> templateLines;
-        string line;
-        while (getline(input, line)) {
-            if (!line.empty() && line.back() == '\r') line.pop_back();
-            line = trim(line);
-            if (!line.empty()) templateLines.push_back(line);
-        }
-        input.close();
+        for (int i = 0; i < 5; i++) {
+            accounts.emplace_back(names[i], password, false);
+            User& user = accounts.back();
 
-        ofstream output(outputFilename);
-        if (!output.is_open()) return false;
+            vector<Song> allSongs = lib.getAllSongsVector();
 
-        for (const string& tpl : templateLines) {
-            stringstream ss(tpl);
-            string name, author, source, durationStr, genre, playCountStr, likedStr;
-            getline(ss, name, '|');
-            getline(ss, author, '|');
-            getline(ss, source, '|');
-            getline(ss, durationStr, '|');
-            getline(ss, genre, '|');
-            getline(ss, playCountStr, '|');
-            getline(ss, likedStr, '|');
+            // Daily Mix
+            Playlist dailyMix = lib.generateThirtyMinMix("Daily Mix");
+            if (dailyMix.getSize() > 0) {
+                user.addPlaylist("Daily Mix");
+                Playlist* p = user.getPlaylist(user.getPlaylistCount() - 1);
+                if (p) {
+                    for (uint j = 0; j < dailyMix.getSize(); j++) {
+                        p->addSong(dailyMix.getSongAt(j));
+                    }
+                }
+            }
 
-            for (int i = 0; i < multiplier; ++i) {
-                int idx = rand() % genreCount;
-                string newGenre = genreMap[idx].genre;
-                string suffix = genreMap[idx].suffix;
-                int newPlayCount = rand() % 501;
-                int newLiked = rand() % 2;
-                output << name << suffix << "|" << author << "|" << source << "|"
-                    << durationStr << "|" << newGenre << "|"
-                    << newPlayCount << "|" << newLiked << "\n";
+            // Playlists aleatorias
+            int numPlaylists = 2 + rand() % 2;
+            for (int p = 0; p < numPlaylists; p++) {
+                string plName = "Playlist " + to_string(p + 1);
+                user.addPlaylist(plName);
+                Playlist* pl = user.getPlaylist(user.getPlaylistCount() - 1);
+                if (!pl) continue;
+                int numSongs = 3 + rand() % 6;
+                for (int s = 0; s < numSongs && !allSongs.empty(); s++) {
+                    int idx = rand() % allSongs.size();
+                    pl->addSong(allSongs[idx]);
+                }
+            }
+
+            // Likes aleatorios
+            int numLiked = 3 + rand() % 8;
+            for (int s = 0; s < numLiked && !allSongs.empty(); s++) {
+                int idx = rand() % allSongs.size();
+                user.likeSong(allSongs[idx].getSource());
+            }
+
+            // Historial aleatorio
+            int numHistory = 3 + rand() % 5;
+            for (int s = 0; s < numHistory && !allSongs.empty(); s++) {
+                int idx = rand() % allSongs.size();
+                user.addToSessionHistory(allSongs[idx]);
             }
         }
-
-        output.close();
-        return true;
+        return accounts;
     }
 
     /*

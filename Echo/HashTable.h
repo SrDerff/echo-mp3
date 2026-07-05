@@ -64,6 +64,39 @@ public:
         clear();
     }
 
+    HashTable(const HashTable& other)
+        : numBuckets(other.numBuckets), numElements(other.numElements) {
+        buckets.resize(numBuckets, nullptr);
+        for (size_t i = 0; i < numBuckets; ++i) {
+            HashNode** dst = &buckets[i];
+            HashNode* src = other.buckets[i];
+            while (src != nullptr) {
+                *dst = new HashNode(src->key, src->value);
+                dst = &((*dst)->next);
+                src = src->next;
+            }
+        }
+    }
+
+    HashTable& operator=(const HashTable& other) {
+        if (this != &other) {
+            clear();
+            numBuckets = other.numBuckets;
+            numElements = other.numElements;
+            buckets.resize(numBuckets, nullptr);
+            for (size_t i = 0; i < numBuckets; ++i) {
+                HashNode** dst = &buckets[i];
+                HashNode* src = other.buckets[i];
+                while (src != nullptr) {
+                    *dst = new HashNode(src->key, src->value);
+                    dst = &((*dst)->next);
+                    src = src->next;
+                }
+            }
+        }
+        return *this;
+    }
+
     void insert(const T& key, const V& value) {
         if ((double)numElements / numBuckets > 0.75) {
             rehash();

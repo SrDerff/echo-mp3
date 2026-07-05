@@ -175,6 +175,65 @@ public:
     MusicLibrary() {
     }
 
+    /*
+    Importancia:
+    Funcion nuclear del sistema que inserta una cancion en la biblioteca musical
+    y la indexa automaticamente en los 6 sistemas de busqueda optimizada
+    (HashTable por fuente, HashTable por artista, HashTable por genero,
+    RedBlackTree por nombre, AVLTree por duracion, AVLTree por reproducciones).
+    Tambien actualiza las entidades de artista y album/genero. Es la unica
+    puerta de entrada para incorporar canciones a la biblioteca. Sin esta
+    funcion, ninguna cancion cargada desde disco o agregada manualmente
+    estaria disponible para busqueda, reproduccion o recomendacion.
+
+    BigO: O(N + A + B)
+    Donde N es la cantidad actual de canciones en la lista (insercion al final
+    de la lista doblemente enlazada: O(1) gracias al puntero a la cola),
+    A es la cantidad de artistas existentes (busqueda lineal O(A) para
+    encontrar coincidencia o crear nuevo), y B es la cantidad de albumes
+    existentes (busqueda lineal O(B) similar).
+    Las inserciones en los 3 HashTable son O(1) promedio y O(N) en el peor
+    caso de colisiones. Las inserciones en RedBlackTree y AVLTree son
+    O(log M) donde M es la cantidad de elementos en cada arbol.
+    Espacio: O(1) adicional, pues la cancion ya se almacena en la lista
+    y los indices solo guardan punteros o copias ligeras.
+
+    Explicacion detallada:
+    1. Toma una copia de la cancion recibida (`normalizedSong`) para no
+       modificar el objeto original del llamante.
+    2. Normaliza el genero invocando `normalizeGenre()`, que asigna un
+       genero estandarizado (Rock, Pop, Hip Hop, Latin, Electronic, Ballad,
+       Other) segun una tabla fija de nombres de cancion conocidos. Esto
+       garantiza consistencia en los filtros por genero y en el sistema
+       de recomendacion.
+    3. Inserta la cancion al final de la lista doblemente enlazada `allSongs`
+       mediante `insertAtTail()`. Esto la almacena en el contenedor principal.
+    4. Obtiene un puntero `ptr` al nodo recien insertado. Este puntero
+       apunta a la direccion definitiva en memoria del objeto Song dentro
+       de la lista. Todos los indices usaran este mismo puntero para
+       referenciar la misma instancia.
+    5. Indexa en los 6 sistemas de busqueda:
+       a) `indexBySource`: HashTable clave=fuente (ruta de archivo),
+          valor=Song* (puntero). Permite busqueda O(1) por ruta.
+       b) `indexByArtist`: HashTable clave=nombre del artista,
+          valor=vector<Song*>. Si el artista ya existe, agrega al vector;
+          si no, crea una nueva entrada con un vector que contiene el puntero.
+       c) `indexByGenre`: HashTable clave=genero normalizado,
+          valor=vector<Song*>. Misma logica que artista: agrega o crea.
+       d) `indexByName`: RedBlackTree clave=nombre de la cancion,
+          valor=copia de Song. Permite busqueda por prefijo O(log N).
+       e) `indexByDuration`: AVLTree clave=duracion en segundos,
+          valor=copia de Song. Permite consultas por rango de duracion.
+       f) `indexByPlayCount`: AVLTree clave=conteo de reproducciones,
+          valor=copia de Song. Permite obtener las mas reproducidas.
+    6. Busca si el artista ya existe en el vector `artists`. Si existe,
+       agrega la cancion a su lista de canciones. Si no existe, crea un
+       nuevo objeto Artist con el nombre del autor y lo agrega al vector.
+    7. Busca si existe un album con el mismo titulo (que es el genero) y
+       el mismo artista. Si existe, agrega la cancion como pista. Si no
+       existe, crea un nuevo Album y lo agrega al vector. Esto organiza
+       las canciones en una estructura jerarquica Artista -> Album -> Cancion.
+    */
     void addSongToLibrary(const Song& song) {
         Song normalizedSong = song;
         normalizedSong.setGenre(normalizeGenre(normalizedSong));
@@ -306,6 +365,67 @@ public:
         return songs;
     }
 
+    /*
+    Importancia:
+    Implementa el motor de recomendacion basado en grafos de similitud.
+    Construye un grafo ponderado donde cada vertice es una cancion de la
+    biblioteca y las aristas representan similitud calculada por la funcion
+    `songSimilarity()`: mismo artista (+40), mismo genero (+30), duracion
+    similar con diferencia <= 20s (+10). Luego recorre el historial de
+    reproduccion de la sesion actual y, para cada cancion escuchada,
+    refuerza el puntaje de sus vecinos en el grafo con un bono base de
+    +10 mas el peso de la arista. Finalmente, excluye las canciones que
+    ya estan en el historial y retorna las recomendaciones ordenables por
+    puntaje. Es la base de la pestana "Recom." y permite al usuario
+    descubrir musica relacionada con lo que acaba de escuchar.
+
+    BigO: O(V^2 + H * V + V * H)
+    Donde V es la cantidad de canciones en la biblioteca (vertices del grafo),
+    y H es la cantidad de elementos en el historial de sesion.
+    - Construccion del grafo: O(V^2) porque se comparan todos los pares
+      de canciones (V * (V-1) / 2 iteraciones) con `songSimilarity()`
+      que es O(1) por par.
+    - Refuerzo desde historial: O(H * grado_promedio), donde grado_promedio
+      depende de cuantas aristas tenga cada nodo. En el peor caso (todos
+      conectados) es O(H * V).
+    - Filtrado de canciones ya escuchadas: O(V * H) porque por cada vertice
+      recorre todo el historial verificando source.
+    Espacio: O(V) para el grafo, O(V) para el vector de scores, O(V) para
+    el vector de recomendaciones resultante, mas O(V) temporal por la copia
+    de `getAllSongsVector()` para construir el grafo.
+
+    Explicacion detallada:
+    1. Obtiene todas las canciones de la biblioteca como un vector de copias
+       mediante `getAllSongsVector()`. Si la biblioteca esta vacia, retorna
+       un vector vacio inmediatamente.
+    2. Construye un grafo no dirigido ponderado llamando a
+       `buildRecommendationGraph(allSongsVector)`. Esta funcion itera sobre
+       todos los pares de canciones (i, j con j > i), calcula la similitud
+       con `songSimilarity()`, y si el peso es mayor a 0, agrega dos aristas
+       (i -> j y j -> i) con ese peso. El resultado es un grafo completo
+       (o casi completo) donde cada arista refleja que tan relacionadas
+       estan dos canciones.
+    3. Inicializa un vector `scores` del mismo tamano que el grafo, con
+       todos los valores en 0. Este vector acumulara el puntaje de
+       recomendacion para cada cancion.
+    4. Define una funcion lambda `boostFromSeed` que, dada una cancion
+       semilla (del historial) y un bono base, encuentra el indice de esa
+       cancion en el grafo y recorre todos sus vecinos, sumando a sus
+       scores: `bonoBase + pesoArista`.
+    5. Recorre todo el historial de la sesion (`sessionHistory`) y por
+       cada cancion escuchada llama a `boostFromSeed(cancion, 10)`.
+       Esto propaga +10 + peso a todas las canciones relacionadas,
+       dando mas peso a las que comparten artista/genero con lo escuchado.
+    6. Itera sobre todos los vertices del grafo. Para cada cancion:
+       a) Verifica si ya esta en el historial recorriendo `sessionHistory`
+          y comparando las rutas de archivo (source).
+       b) Si NO esta en el historial (no la acaba de escuchar), agrega
+          un RecommendationItem con la cancion, su puntaje acumulado y
+          una cadena de razon vacia. Si ya esta en el historial, la omite.
+    7. Retorna el vector de recomendaciones. La interfaz se encarga de
+       ordenarlo por QuickSort segun el puntaje (teclas R/T) y mostrarlo
+       en la pestana "Recom.".
+    */
     vector<RecommendationItem> getRecommendedSongs() {
         vector<RecommendationItem> recommendations;
         vector<Song> allSongsVector = getAllSongsVector();
