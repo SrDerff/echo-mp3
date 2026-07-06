@@ -1065,11 +1065,11 @@ void Interface::displayWelcomeScreen(int selectedIndex) {
     line(3, 54, 194, cyanR, cyanG, cyanB);
 
     writeAt(6, 4, "| Welcome |", 200, 200, 230);
-    writeAt(176, 3, "Music Player CLI", cyanR, cyanG, cyanB);
+    writeAt(176, 3, "Echo", cyanR, cyanG, cyanB);
     writeAt(186, 5, "v1.0.0", yellowR, yellowG, yellowB);
 
     framedBox(60, 10, 80, 10, cyanR, cyanG, cyanB);
-    center(13, "M U S I C   P L A Y E R   C L I", cyanR, cyanG, cyanB);
+    center(13, "ECHO", cyanR, cyanG, cyanB);
     center(16, "Tu musica. Tu estilo. En consola.", yellowR, yellowG, yellowB);
 
     writeAt(76, 24, "--------", cyanR, cyanG, cyanB);
